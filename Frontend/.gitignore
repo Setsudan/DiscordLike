@@ -34,3 +34,6 @@ publish/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+#DiscordBackend
+DiscordBackend/

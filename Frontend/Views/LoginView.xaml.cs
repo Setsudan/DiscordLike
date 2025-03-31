@@ -24,4 +24,4 @@ namespace DiscordLikeChatApp.Views
     }
 
 }
-}
+
