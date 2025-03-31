@@ -15,9 +15,9 @@
         <ListBox x:Name="MessagesListBox" Grid.Row="0" Background="#2F3136" Foreground="White" />
 
         <!-- Zone de saisie du message -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Background="#40444B">
-            <TextBox x:Name="MessageTextBox" Width="700" Margin="10" />
-            <Button Content="Envoyer" Width="100" Margin="10" Click="OnSendButtonClick" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Background="#40444B">  
+           <TextBox x:Name="MessageTextBox" Width="650" Margin="10" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />  
+           <Button Content="Envoyer" Width="100" Margin="10" Click="OnSendButtonClick" />  
         </StackPanel>
     </Grid>
 </UserControl>

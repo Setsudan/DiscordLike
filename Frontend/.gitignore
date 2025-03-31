@@ -38,4 +38,5 @@ desktop.ini
 #DiscordBackend
 DiscordBackend/
 
+# Visual Studio folder
 .vs/
