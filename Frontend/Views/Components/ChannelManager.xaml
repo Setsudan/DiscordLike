@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="DiscordLikeChatApp.Views.Components.ChannelManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DiscordLikeChatApp.Views.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel>
+            <!-- Liste des membres du salon -->
+            <TextBlock Text="Membres du Salon" FontSize="16" FontWeight="Bold" Margin="10"/>
+            <ListBox x:Name="MembersListBox" Margin="10">
+                <!-- Exemple de membre -->
+                <ListBoxItem Content="Utilisateur1 (Admin)"/>
+                <ListBoxItem Content="Utilisateur2 (Modérateur)"/>
+                <ListBoxItem Content="Utilisateur3 (Membre)"/>
+            </ListBox>
+
+            <!-- Actions de modération -->
+            <TextBlock Text="Actions de Modération" FontSize="16" FontWeight="Bold" Margin="10"/>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Button Content="Nommer Modérateur" Click="OnPromoteToModeratorClick" Margin="5"/>
+                <Button Content="Retirer Modérateur" Click="OnDemoteFromModeratorClick" Margin="5"/>
+                <Button Content="Bloquer/Bannir" Click="OnBanUserClick" Margin="5"/>
+            </StackPanel>
+
+            <!-- Outils d’administration -->
+            <TextBlock Text="Outils d’Administration" FontSize="16" FontWeight="Bold" Margin="10"/>
+            <StackPanel Margin="10">
+                <TextBlock Text="Nom du Salon" Margin="5"/>
+                <TextBox x:Name="ChannelNameTextBox" Margin="5"/>
+                <TextBlock Text="Description du Salon" Margin="5"/>
+                <TextBox x:Name="ChannelDescriptionTextBox" Margin="5"/>
+                <Button Content="Enregistrer les Modifications" Click="OnSaveChannelSettingsClick" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
+

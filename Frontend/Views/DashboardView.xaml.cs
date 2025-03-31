@@ -26,15 +26,11 @@ namespace DiscordLikeChatApp.Views {
             // Logique pour charger les informations du serveur en fonction de l'ID du serveur
             ChannelStackPanel.Children.Clear();
             ChannelStackPanel.Children.Add(new TextBlock { Text = $"Serveur {serverId}", Foreground = Brushes.White, FontSize = 20, Margin = new Thickness(10) });
-            var generalButton = new Button { Content = "# général", Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
-            generalButton.Click += OnChannelButtonClick;
-            ChannelStackPanel.Children.Add(generalButton);
-            var randomButton = new Button { Content = "# random", Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
-            randomButton.Click += OnChannelButtonClick;
-            ChannelStackPanel.Children.Add(randomButton);
+            AddChannelButton("# général");
+            AddChannelButton("# random");
 
             // Ajouter un bouton pour créer un nouveau canal
-            var createChannelButton = new Button { Content = "Créer un nouveau canal", Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
+            var createChannelButton = new Button { Content = "+ Ajouter un nouveau canal", Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
             createChannelButton.Click += OnCreateChannelButtonClick;
             ChannelStackPanel.Children.Add(createChannelButton);
         }
@@ -56,13 +52,37 @@ namespace DiscordLikeChatApp.Views {
             var inputDialog = new InputDialog("Entrez le nom du nouveau canal :");
             if (inputDialog.ShowDialog() == true) {
                 string newChannelId = inputDialog.ResponseText;
-                var newChannelButton = new Button { Content = newChannelId, Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
-                newChannelButton.Click += OnChannelButtonClick;
-                ChannelStackPanel.Children.Add(newChannelButton);
+                AddChannelButton(newChannelId);
 
                 // Attribuer automatiquement le rôle d'administrateur à l'utilisateur
                 AssignAdminRoleToUser();
             }
+        }
+
+        private void AddChannelButton(string channelId) {
+            var channelPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(10) };
+
+            var manageButton = new Button { Content = "⚙", Width = 20, Height = 20, Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
+            manageButton.Click += (s, e) => OnClickManageChannel(channelId);
+            channelPanel.Children.Add(manageButton);
+
+            var channelButton = new Button { Content = channelId, Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
+            channelButton.Click += OnChannelButtonClick;
+            channelPanel.Children.Add(channelButton);
+
+            ChannelStackPanel.Children.Add(channelPanel);
+        }
+
+        private void OnClickManageChannel(string channelId) {
+            MainGrid.Children.Clear();
+            var channelManager = new ChannelManager();
+            MainGrid.Children.Add(channelManager);
+        }
+
+        private void OnUserSettingsButtonClick(object sender, RoutedEventArgs e) {
+            MainGrid.Children.Clear();
+            var userSettings = new UserSettings();
+            MainGrid.Children.Add(userSettings);
         }
 
         private void AssignAdminRoleToUser() {
@@ -76,4 +96,3 @@ namespace DiscordLikeChatApp.Views {
         }
     }
 }
-
