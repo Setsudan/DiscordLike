@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
   </ItemGroup>
 
 </Project>

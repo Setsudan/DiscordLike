@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using DiscordLikeChatApp.Views.Components;
 
 namespace DiscordLikeChatApp.Views {
     public partial class DashboardView : UserControl {
@@ -46,7 +47,7 @@ namespace DiscordLikeChatApp.Views {
 
         private void OnCreateChannelButtonClick(object sender, RoutedEventArgs e) {
             // Afficher une boîte de dialogue pour entrer le nom du nouveau canal
-            var inputDialog = new InputDialog("Entrez le nom du nouveau canal:");
+            var inputDialog = new InputDialog("Entrez le nom du nouveau canal :");
             if (inputDialog.ShowDialog() == true) {
                 string newChannelId = inputDialog.ResponseText;
                 var newChannelButton = new Button { Content = newChannelId, Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
