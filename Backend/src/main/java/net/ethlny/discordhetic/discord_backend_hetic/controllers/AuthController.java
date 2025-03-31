@@ -29,7 +29,7 @@ import net.ethlny.discordhetic.discord_backend_hetic.security.jwt.JwtTokenProvid
 import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsImpl;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
