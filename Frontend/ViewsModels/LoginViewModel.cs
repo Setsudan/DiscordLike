@@ -5,6 +5,7 @@ using System.Windows.Input;
 using DiscordFrontEnd.Models;
 using DiscordFrontEnd.Services;
 
+
 namespace DiscordFrontEnd.ViewModels {
     public class LoginViewModel : INotifyPropertyChanged {
         private string _username;
@@ -33,7 +34,7 @@ namespace DiscordFrontEnd.ViewModels {
 
         public LoginViewModel() {
             _apiService = new ApiService();
-            LoginCommand = new RelayCommand(async _ => await LoginAsync());
+            LoginCommand = new RelayCommand(async () => await LoginAsync());
         }
 
         private async Task LoginAsync() {
