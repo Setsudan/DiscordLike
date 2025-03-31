@@ -7,6 +7,12 @@ namespace DiscordLikeChatApp.Views {
     public partial class DashboardView : UserControl {
         public DashboardView() {
             InitializeComponent();
+            InitializeUserDetails();
+        }
+
+        private void InitializeUserDetails() {
+            UserNameTextBlock.Text = "Utilisateur123"; // Remplacez par le nom d'utilisateur réel
+            UserStatusTextBlock.Text = "En ligne"; // Remplacez par le statut réel de l'utilisateur
         }
 
         private void OnServerButtonClick(object sender, RoutedEventArgs e) {
@@ -62,6 +68,11 @@ namespace DiscordLikeChatApp.Views {
         private void AssignAdminRoleToUser() {
             // Logique pour attribuer le rôle d'administrateur à l'utilisateur
             MessageBox.Show("Le rôle d'administrateur a été attribué à l'utilisateur pour le nouveau canal.");
+        }
+
+        private void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
+            // Logique pour rechercher des utilisateurs
+            MessageBox.Show("Fonction de recherche d'utilisateurs non implémentée.");
         }
     }
 }
