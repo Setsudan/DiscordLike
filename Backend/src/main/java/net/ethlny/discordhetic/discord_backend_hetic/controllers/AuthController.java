@@ -87,19 +87,19 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
     
         if (strRoles == null || strRoles.isEmpty()) {
-            Role userRole = roleRepository.findByName("ROLE_USER")
+            Role userRole = roleRepository.findByName("USER")
                     .orElseThrow(() -> new RuntimeException("Error: Role USER not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                        Role adminRole = roleRepository.findByName("ADMIN")
                                 .orElseThrow(() -> new RuntimeException("Error: Role ADMIN not found."));
                         roles.add(adminRole);
                         break;
                     default:
-                        Role userRole = roleRepository.findByName("ROLE_USER")
+                        Role userRole = roleRepository.findByName("USER")
                                 .orElseThrow(() -> new RuntimeException("Error: Role USER not found."));
                         roles.add(userRole);
                 }
