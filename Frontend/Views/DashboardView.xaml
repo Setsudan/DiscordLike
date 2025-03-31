@@ -41,6 +41,8 @@
             <Button Content="# général" Margin="10" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Click="OnChannelButtonClick" />
             <!-- Bouton pour créer un nouveau canal -->
             <Button Content="+ Ajouter un nouveau canal" Margin="10" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Click="OnCreateChannelButtonClick" />
+            <!-- Liste des amis -->
+            <ListBox x:Name="FriendsListBox" Visibility="Collapsed" Background="#2F3136" Foreground="White" Margin="10"/>
         </StackPanel>
 
         <!-- Zone principale -->

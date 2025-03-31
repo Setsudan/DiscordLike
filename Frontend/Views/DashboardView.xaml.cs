@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using DiscordLikeChatApp.Views.Components;
@@ -23,6 +24,10 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private void LoadServer(string serverId) {
+            // Effacer la liste des amis
+            FriendsListBox.Visibility = Visibility.Collapsed;
+            FriendsListBox.Items.Clear();
+
             // Logique pour charger les informations du serveur en fonction de l'ID du serveur
             ChannelStackPanel.Children.Clear();
             ChannelStackPanel.Children.Add(new TextBlock { Text = $"Serveur {serverId}", Foreground = Brushes.White, FontSize = 20, Margin = new Thickness(10) });
@@ -43,6 +48,10 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private void LoadChannel(string channelId) {
+            // Effacer la liste des amis
+            FriendsListBox.Visibility = Visibility.Collapsed;
+            FriendsListBox.Items.Clear();
+
             MainGrid.Children.Clear();
             MainGrid.Children.Add(new ChatView());
         }
@@ -91,8 +100,16 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
+            // Effacer les informations du serveur et des canaux
+            ChannelStackPanel.Children.Clear();
+
             // Logique pour rechercher des utilisateurs
-            MessageBox.Show("Fonction de recherche d'utilisateurs non implémentée.");
+            List<string> friends = new List<string> { "Ami1 (En ligne)", "Ami2 (Hors ligne)", "Ami3 (En ligne)" };
+            FriendsListBox.Items.Clear();
+            foreach (var friend in friends) {
+                FriendsListBox.Items.Add(new ListBoxItem { Content = friend });
+            }
+            FriendsListBox.Visibility = Visibility.Visible;
         }
     }
 }
