@@ -21,7 +21,6 @@ import net.ethlny.discordhetic.discord_backend_hetic.security.jwt.AuthEntryPoint
 import net.ethlny.discordhetic.discord_backend_hetic.security.jwt.CustomUserDetailsService;
 import net.ethlny.discordhetic.discord_backend_hetic.security.jwt.JwtAuthenticationFilter;
 import net.ethlny.discordhetic.discord_backend_hetic.security.jwt.JwtTokenProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import org.springframework.beans.factory.annotation.Value;
 
