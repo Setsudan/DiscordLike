@@ -1,4 +1,4 @@
-package net.ethlny.discordhetic.discord_backend_hetic.services;
+package net.ethlny.discordhetic.discord_backend_hetic.services.messaging;
 
 import net.ethlny.discordhetic.discord_backend_hetic.models.Message;
 import net.ethlny.discordhetic.discord_backend_hetic.repositories.MessageRepository;

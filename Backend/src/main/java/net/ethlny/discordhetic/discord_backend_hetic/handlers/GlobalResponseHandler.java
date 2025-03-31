@@ -1,4 +1,4 @@
-package net.ethlny.discordhetic.discord_backend_hetic.advice;
+package net.ethlny.discordhetic.discord_backend_hetic.handlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

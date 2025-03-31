@@ -1,4 +1,4 @@
-package net.ethlny.discordhetic.discord_backend_hetic.advice;
+package net.ethlny.discordhetic.discord_backend_hetic.handlers;
 
 import net.ethlny.discordhetic.discord_backend_hetic.payload.StandardResponse;
 import org.springframework.http.HttpStatus;
