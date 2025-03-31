@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "discordhetic.cors.allowed-origins",
+  "type": "java.lang.String",
+  "description": "A description for 'discordhetic.cors.allowed-origins'"
+}]}
