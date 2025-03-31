@@ -11,4 +11,6 @@ import net.ethlny.discordhetic.discord_backend_hetic.models.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
     Optional<Role> findByName(String name);
+
+    Boolean existsByName(String name);
 }
