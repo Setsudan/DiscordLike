@@ -26,10 +26,10 @@ public class JwtTokenProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${wework.app.jwtSecret}")
+    @Value("${discordhetic.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${wework.app.jwtExpirationMs}")
+    @Value("${discordhetic.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
     /**
