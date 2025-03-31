@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DiscordBackendHeticApplication<Discord_Backend_Hetic-Backend>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "net.ethlny.discordhetic.discord_backend_hetic.DiscordBackendHeticApplication",
+            "projectName": "Discord_Backend_Hetic-Backend",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
