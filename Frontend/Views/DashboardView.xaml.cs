@@ -45,14 +45,17 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private void OnCreateChannelButtonClick(object sender, RoutedEventArgs e) {
-            // Logique pour créer un nouveau canal
-            string newChannelId = "# nouveau-canal";
-            var newChannelButton = new Button { Content = newChannelId, Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
-            newChannelButton.Click += OnChannelButtonClick;
-            ChannelStackPanel.Children.Add(newChannelButton);
+            // Afficher une boîte de dialogue pour entrer le nom du nouveau canal
+            var inputDialog = new InputDialog("Entrez le nom du nouveau canal:");
+            if (inputDialog.ShowDialog() == true) {
+                string newChannelId = inputDialog.ResponseText;
+                var newChannelButton = new Button { Content = newChannelId, Margin = new Thickness(10), Background = Brushes.Transparent, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Left };
+                newChannelButton.Click += OnChannelButtonClick;
+                ChannelStackPanel.Children.Add(newChannelButton);
 
-            // Attribuer automatiquement le rôle d'administrateur à l'utilisateur
-            AssignAdminRoleToUser();
+                // Attribuer automatiquement le rôle d'administrateur à l'utilisateur
+                AssignAdminRoleToUser();
+            }
         }
 
         private void AssignAdminRoleToUser() {
@@ -61,3 +64,4 @@ namespace DiscordLikeChatApp.Views {
         }
     }
 }
+

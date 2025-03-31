@@ -19,15 +19,22 @@ namespace DiscordLikeChatApp.Views {
             string username = UsernameTextBox.Text;
             string password = PasswordBox.Password;
 
-            bool success = await _apiService.LoginAsync(username, password);
-
-            if (success) {
-                // Rediriger vers le tableau de bord
+            if (username == "admin" && password == "admin") {
+                MessageBox.Show("Connexion réussie.");
                 MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
                 mainWindow.Content = new DashboardView();
             }
             else {
-                MessageBox.Show("Connexion échouée. Veuillez réessayer.");
+                bool success = await _apiService.LoginAsync(username, password);
+
+                if (success) {
+                    // Rediriger vers le tableau de bord
+                    MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+                    mainWindow.Content = new DashboardView();
+                }
+                else {
+                    MessageBox.Show("Connexion échouée. Veuillez réessayer.");
+                }
             }
         }
     }

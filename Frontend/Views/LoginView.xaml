@@ -20,10 +20,10 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock Text="Bienvenue sur DiscordLikeChatApp" FontSize="24" Margin="0,0,0,20" />
-            <TextBlock Text="Nom d'utilisateur" Margin="0,0,0,5" />
+            <TextBlock Text="Nom d'utilisateur :" Margin="0,0,0,5" HorizontalAlignment="Center" />
             <TextBox Name="UsernameTextBox" Margin="0,0,0,10" Width="200" />
 
-            <TextBlock Text="Mot de passe" Margin="0,0,0,5" />
+            <TextBlock Text="Mot de passe :" Margin="0,0,0,5" HorizontalAlignment="Center" />
             <PasswordBox Name="PasswordBox" Margin="0,0,0,10" Width="200" />
 
             <Button Content="Se connecter" Width="100" Height="25" HorizontalAlignment="Center" Click="Button_Click"/>
