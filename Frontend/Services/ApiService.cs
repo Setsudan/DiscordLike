@@ -1,55 +1,90 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using DiscordFrontEnd.Models;
+using Newtonsoft.Json;
 
-namespace DiscordFrontEnd.Services {
-
-    public class ApiService {
+namespace DiscordHeticWpf.Services
+{
+    public class ApiService
+    {
         private readonly HttpClient _httpClient;
+        public string BaseUrl { get; }
 
-        public ApiService() {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:8080"); //changez par le bon url
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        public async Task<bool> LoginAsync(string username, string password) {
-            var user = new {
-                username,
-                password
+        public ApiService(string baseUrl, string token = null)
+        {
+            BaseUrl = baseUrl;
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(BaseUrl)
             };
-            var json = JsonSerializer.Serialize(user);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/auth/login", content);
-
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<bool> RegisterAsync(User user) {
-            var json = JsonSerializer.Serialize(user);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("/auth/register", content);
-
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<List<User>> GetUsersAsync() {
-            var response = await _httpClient.GetAsync("/users");
-
-            if (response.IsSuccessStatusCode) {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<User>>(json);
+            if (!string.IsNullOrEmpty(token))
+            {
+                SetToken(token);
             }
-
-            return null;
         }
 
+        /// <summary>
+        /// Sets or updates the Authorization header with a bearer token.
+        /// </summary>
+        public void SetToken(string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
+        }
+
+        /// <summary>
+        /// Sends a GET request and deserializes the JSON response into type T.
+        /// </summary>
+        public async Task<T> GetAsync<T>(string endpoint)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Sends a POST request with JSON-serialized data and returns a deserialized response of type T.
+        /// </summary>
+        public async Task<T> PostAsync<T>(string endpoint, object data)
+        {
+            string jsonData = JsonConvert.SerializeObject(data);
+            HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Sends a PUT request with JSON-serialized data and returns a deserialized response of type T.
+        /// </summary>
+        public async Task<T> PutAsync<T>(string endpoint, object data)
+        {
+            string jsonData = JsonConvert.SerializeObject(data);
+            HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PutAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Sends a DELETE request.
+        /// </summary>
+        public async Task DeleteAsync(string endpoint)
+        {
+            HttpResponseMessage response = await _httpClient.DeleteAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

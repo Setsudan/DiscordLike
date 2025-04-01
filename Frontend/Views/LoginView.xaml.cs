@@ -1,27 +1,26 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using DiscordHeticWpf.ViewModels;
 
-
-namespace DiscordLikeChatApp.Views
+namespace DiscordHeticWpf.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour LoginView.xaml
-    /// </summary>
-    public partial class LoginView : UserControl
+    public partial class LoginView : Window
     {
         public LoginView()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
-            string username = UsernameTextBox.Text;
-            string password = PasswordBox.Password;
+        // Assuming DataContext is an instance of AuthViewModel
+        private AuthViewModel ViewModel => (AuthViewModel)DataContext;
 
-            // ajouter le HTTP request ici
-
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null && sender is PasswordBox passwordBox)
+            {
+                // Update the ViewModel's Password property whenever the PasswordBox changes.
+                ViewModel.Password = passwordBox.Password;
+            }
         }
     }
-
-}
 }
