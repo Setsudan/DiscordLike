@@ -1,0 +1,448 @@
+{
+  "info": {
+    "_postman_id": "f8b5d94a-8f2d-4e0a-a6fa-123456789abc",
+    "name": "Discord Hetic API Test Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User: Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User: Update Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"newemail@example.com\",\n  \"displayName\": \"New Name\",\n  \"avatarUrl\": \"http://example.com/avatar.png\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User: Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User: Get User By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "{{userId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Channel: Get All Channels",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/channels",
+          "host": ["{{baseUrl}}"],
+          "path": ["channels"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Channel: Get Channel By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/channels/{{channelId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["channels", "{{channelId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Channel: Create Channel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"General\",\n  \"description\": \"General discussion\",\n  \"type\": \"TEXT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/channels",
+          "host": ["{{baseUrl}}"],
+          "path": ["channels"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Channel: Update Channel",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Channel Name\",\n  \"description\": \"Updated description\",\n  \"type\": \"TEXT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/channels/{{channelId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["channels", "{{channelId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Channel: Delete Channel",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/channels/{{channelId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["channels", "{{channelId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Message: Send Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"Hello, world!\",\n  \"channelId\": \"{{channelId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/messages",
+          "host": ["{{baseUrl}}"],
+          "path": ["messages"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Message: Get Messages for Channel",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/messages/channel/{{channelId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["messages", "channel", "{{channelId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Friend: Send Friend Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/friends/request?recipientId={{recipientId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["friends", "request"],
+          "query": [
+            {
+              "key": "recipientId",
+              "value": "{{recipientId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Friend: Accept Friend Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/friends/{{friendshipId}}/accept",
+          "host": ["{{baseUrl}}"],
+          "path": ["friends", "{{friendshipId}}", "accept"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Friend: Decline Friend Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/friends/{{friendshipId}}/decline",
+          "host": ["{{baseUrl}}"],
+          "path": ["friends", "{{friendshipId}}", "decline"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Friend: Get Friends",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/friends",
+          "host": ["{{baseUrl}}"],
+          "path": ["friends"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Friend: Get Pending Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/friends/requests",
+          "host": ["{{baseUrl}}"],
+          "path": ["friends", "requests"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Direct Message: Send",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/direct-messages?recipientId={{recipientId}}&content=Hi%20there!",
+          "host": ["{{baseUrl}}"],
+          "path": ["direct-messages"],
+          "query": [
+            {
+              "key": "recipientId",
+              "value": "{{recipientId}}"
+            },
+            {
+              "key": "content",
+              "value": "Hi there!"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Direct Message: Get Conversation",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/direct-messages/conversation/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["direct-messages", "conversation", "{{userId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Notification: Get Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": "<your-jwt-token-here>"
+    },
+    {
+      "key": "userId",
+      "value": "<sample-user-uuid>"
+    },
+    {
+      "key": "channelId",
+      "value": "<sample-channel-uuid>"
+    },
+    {
+      "key": "recipientId",
+      "value": "<sample-recipient-uuid>"
+    },
+    {
+      "key": "friendshipId",
+      "value": "<sample-friendship-uuid>"
+    }
+  ]
+}
