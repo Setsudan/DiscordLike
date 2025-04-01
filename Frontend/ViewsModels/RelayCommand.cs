@@ -1,16 +1,16 @@
 ﻿using System.Windows.Input;
 
 internal class RelayCommand : ICommand {
-    private readonly Func<Task> _execute;
+    private readonly Func<object, Task> _execute;
     public event EventHandler? CanExecuteChanged;
 
-    public RelayCommand(Func<Task> execute) {
+    public RelayCommand(Func<object, Task> execute) {
         _execute = execute;
     }
 
     public bool CanExecute(object? parameter) => true;
 
     public async void Execute(object? parameter) {
-        await _execute();
+        await _execute(parameter);
     }
 }

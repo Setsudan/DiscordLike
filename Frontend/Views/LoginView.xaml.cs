@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using DiscordFrontEnd.Services;
 
 
@@ -36,6 +37,16 @@ namespace DiscordLikeChatApp.Views {
                     MessageBox.Show("Connexion échouée. Veuillez réessayer.");
                 }
             }
+        }
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
+            if (e.Uri.ToString() == "register") {
+                MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.Content = new RegisterView();
+            }
+            else {
+                MessageBox.Show("Navigating to: " + e.Uri.ToString());
+            }
+            e.Handled = true;
         }
     }
 }
