@@ -1,19 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using DiscordLikeChatApp.Services;
 using DiscordLikeChatApp.Views.Components;
 
 namespace DiscordLikeChatApp.Views {
-    public partial class DashboardView : UserControl {
+    public partial class DashboardView : UserControl, INotifyPropertyChanged {
+
+        private readonly UserSession _userSession;
+        private string _username;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string Username {
+            get => _username;
+            set {
+                _username = value;
+                OnPropertyChanged(nameof(Username));
+            }
+        }
         public DashboardView() {
             InitializeComponent();
             InitializeUserDetails();
         }
 
         private void InitializeUserDetails() {
-            UserNameTextBlock.Text = "Utilisateur123"; // Remplacez par le nom d'utilisateur réel
-            UserStatusTextBlock.Text = "En ligne"; // Remplacez par le statut réel de l'utilisateur
+            UserNameTextBlock.Text = "123";
+            UserStatusTextBlock.Text = "En ligne"; 
         }
 
         private void OnServerButtonClick(object sender, RoutedEventArgs e) {

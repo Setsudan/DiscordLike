@@ -1,25 +1,27 @@
-﻿using System.Windows;
+﻿using System.Net.Http;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using DiscordLikeChatApp.Services;
-using static DiscordFrontEnd.ViewModels.LoginViewModel;
-
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace DiscordLikeChatApp.Views {
     /// <summary>
     /// Logique d'interaction pour LoginView.xaml
     /// </summary>
     public partial class LoginView : UserControl {
-        private readonly ApiService _apiService;
+        private readonly AuthService _authService;
 
         public LoginView() {
             InitializeComponent();
-            _apiService = new ApiService();
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            _authService = new AuthService(configuration, new HttpClient());
         }
 
         private async Task<bool> LoginAsync(string username, string password) {
             try {
-                bool success = await _apiService.LoginAsync(username, password);
+                bool success = await _authService.LoginAsync(username, password);
                 if (success) {
                     MessageBox.Show("Connexion réussie.");
                 }
