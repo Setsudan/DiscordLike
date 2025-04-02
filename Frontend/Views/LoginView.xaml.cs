@@ -5,6 +5,7 @@ using System.Windows.Navigation;
 using DiscordLikeChatApp.Services;
 using Microsoft.Extensions.Configuration;
 using System;
+using DiscordLikeChatApp.Models;
 
 namespace DiscordLikeChatApp.Views {
     /// <summary>
@@ -13,6 +14,7 @@ namespace DiscordLikeChatApp.Views {
     public partial class LoginView : UserControl {
         private readonly AuthService _authService;
         private readonly UserSession _userSession;
+        private readonly IConfiguration _configuration;
 
         public LoginView() {
             InitializeComponent();
@@ -21,21 +23,22 @@ namespace DiscordLikeChatApp.Views {
             _userSession = new UserSession();
         }
 
-        private async Task<bool> LoginAsync(string username, string password) {
+        private async Task<AccessTokenResponse> LoginAsync(string username, string password) {
             try {
-                bool success = await _authService.LoginAsync(username, password);
-                if (success) {
+                AccessTokenResponse response = await _authService.LoginAsync(username, password);
+                if (response.IsSuccess) {
                     MessageBox.Show("Connexion réussie.");
                     _userSession.Set("Username", username);
+                    _userSession.Set("Authorization", response.AccessToken);
                 }
                 else {
-                    MessageBox.Show("Connexion échouée. Veuillez réessayer.");
+                    MessageBox.Show("Connexion échouée : " + response.ErrorMessage);
                 }
-                return success;
+                return response;
             }
             catch (Exception ex) {
                 MessageBox.Show("Une erreur s'est produite : " + ex.Message);
-                return false;
+                return new AccessTokenResponse { IsSuccess = false, ErrorMessage = ex.Message };
             }
         }
 
@@ -43,11 +46,11 @@ namespace DiscordLikeChatApp.Views {
             string username = UsernameTextBox.Text;
             string password = PasswordBox.Password;
 
-            bool success = await LoginAsync(username, password);
+            AccessTokenResponse response = await LoginAsync(username, password);
 
-            if (success) {
+            if (response.IsSuccess) {
                 MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.Content = new DashboardView(_userSession);
+                mainWindow.Content = new DashboardView(_userSession, _configuration);
             }
         }
 

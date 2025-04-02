@@ -1,12 +1,13 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Acr.UserDialogs;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using DiscordLikeChatApp.Models;
 
-namespace DiscordLikeChatApp.Services
-{
+namespace DiscordLikeChatApp.Services {
     public class AuthService {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
@@ -17,22 +18,52 @@ namespace DiscordLikeChatApp.Services
             _httpClient = httpClient;
         }
 
-        public async Task<bool> LoginAsync(string username, string password) {
+        public async Task<AccessTokenResponse> LoginAsync(string username, string password) {
             var loginEndpoint = _configuration["Auth:LoginEndpoint"];
             var loginData = new {
                 Username = username,
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync(loginEndpoint, loginData);
-            if (response.IsSuccessStatusCode) {
-                var result = await JsonSerializer.DeserializeAsync<LoginResult>(await response.Content.ReadAsStreamAsync());
-                _accessToken = result.AccessToken;
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-                return true;
-            }
+            try {
+                var response = await _httpClient.PostAsJsonAsync(loginEndpoint, loginData);
+                if (response.IsSuccessStatusCode) {
+                    // Désérialiser la réponse complète
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var apiResponse = await JsonSerializer.DeserializeAsync<ApiResponse<LoginData>>(
+                        await response.Content.ReadAsStreamAsync(), options);
 
-            return false;
+                    // Vérifier que l'objet désérialisé n'est pas null
+                    if (apiResponse?.Data != null) {
+                        _accessToken = apiResponse.Data.Token;
+                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+
+                        return new AccessTokenResponse {
+                            IsSuccess = true,
+                            AccessToken = _accessToken
+                        };
+                    }
+                    else {
+                        return new AccessTokenResponse {
+                            IsSuccess = false,
+                            ErrorMessage = "Données de connexion invalides."
+                        };
+                    }
+                }
+                else {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    return new AccessTokenResponse {
+                        IsSuccess = false,
+                        ErrorMessage = errorContent
+                    };
+                }
+            }
+            catch (Exception ex) {
+                return new AccessTokenResponse {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
 
         public void Logout() {
@@ -43,7 +74,8 @@ namespace DiscordLikeChatApp.Services
         public bool IsAuthenticated() {
             return !string.IsNullOrEmpty(_accessToken);
         }
-        public async Task<bool> RegisterAsync(string username,string email, string password) {
+
+        public async Task<bool> RegisterAsync(string username, string email, string password) {
             var registerEndpoint = _configuration["Auth:RegisterEndpoint"];
             var registerData = new {
                 Username = username,
@@ -51,16 +83,9 @@ namespace DiscordLikeChatApp.Services
                 Email = email,
                 Role = "ADMIN"
             };
-           
+
             var response = await _httpClient.PostAsJsonAsync(registerEndpoint, registerData);
             return response.IsSuccessStatusCode;
         }
-
-        private class LoginResult {
-            public string AccessToken {
-                get; set;
-            }
-        }
-
     }
 }

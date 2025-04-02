@@ -13,21 +13,39 @@ namespace DiscordLikeChatApp.Services {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
-        public ApiService() {
+        public ApiService(IConfiguration configuration, string authToken) {
+            _configuration = configuration;
             _httpClient = new HttpClient {
-                BaseAddress = new Uri(_configuration["ApiUrl"])
+                BaseAddress = new Uri("http://localhost:8080")
             };
 
             // Configure les en-têtes par défaut 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (!string.IsNullOrEmpty(authToken)) {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+            }
+
         }
 
         // Méthode GET
         public async Task<T> GetAsync<T>(string endpoint) {
             var response = await _httpClient.GetAsync(endpoint);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>();
+
+            var options = new System.Text.Json.JsonSerializerOptions {
+                PropertyNameCaseInsensitive = true
+            };
+
+            // Désérialisation dans ApiResponse<T>
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<T>>(options);
+
+            if (apiResponse == null) {
+                throw new Exception("La réponse de l'API est vide.");
+            }
+
+            return apiResponse.Data;
         }
 
         // Méthode POST 
@@ -67,11 +85,13 @@ namespace DiscordLikeChatApp.Services {
         }
 
         // créer un nouveau canal dans un serveur a corriger avec le bon endpointRe
-        public async Task<Channel> CreateChannelAsync(string serverId, string channelName) {
+        public async Task<Channel> CreateChannelAsync(string channelName, string description, string type) {
             var payload = new {
-                name = channelName
+                name = channelName,
+                description = description,
+                type = type
             };
-            return await PostAsync<object, Channel>($"api/servers/{serverId}/channels", payload);
+            return await PostAsync<object, Channel>("/channels", payload);
         }
 
         // Exemple de méthode pour supprimer un canal
