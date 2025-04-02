@@ -3,7 +3,6 @@ package net.ethlny.discordhetic.discord_backend_hetic.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -30,6 +29,8 @@ public class DirectMessage {
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    private String attachmentUrl;
 
     public DirectMessage(User sender, User recipient, String content) {
         this.sender = sender;

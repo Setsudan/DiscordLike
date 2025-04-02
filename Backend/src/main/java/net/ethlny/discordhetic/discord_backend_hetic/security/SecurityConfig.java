@@ -95,6 +95,10 @@ public class SecurityConfig {
                         // Public endpoints for authentication and API docs
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // Allow Prometheus metrics endpoint
+                        .requestMatchers("/actuator/prometheus").permitAll()
+                        // Allow other actuator endpoints if desired
+                        .requestMatchers("/actuator/**").permitAll()
                         // Protected endpoints
                         .requestMatchers("/channels/**").authenticated()
                         .requestMatchers("/guilds/**").authenticated()
@@ -119,4 +123,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

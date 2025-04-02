@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Setter
 @Getter
 @Entity
@@ -31,6 +33,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 

@@ -28,4 +28,6 @@ public class Message {
 
     @Column(name = "channel_id", nullable = false)
     private UUID channelId;
+
+    private String attachmentUrl;
 }
