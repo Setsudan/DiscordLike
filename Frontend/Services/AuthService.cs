@@ -51,7 +51,7 @@ namespace DiscordLikeChatApp.Services
                 Email = email,
                 Role = "ADMIN"
             };
-
+           
             var response = await _httpClient.PostAsJsonAsync(registerEndpoint, registerData);
             return response.IsSuccessStatusCode;
         }

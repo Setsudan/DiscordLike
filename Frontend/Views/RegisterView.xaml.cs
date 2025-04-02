@@ -25,6 +25,8 @@ namespace DiscordLikeChatApp.Views {
                 bool success = await _authService.RegisterAsync(username, email, password);
                 if (success) {
                     MessageBox.Show("Inscription réussie !", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+
                 }
                 else {
                     MessageBox.Show("Erreur lors de l'inscription.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
