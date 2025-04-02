@@ -57,10 +57,10 @@
 
         <!-- 🌟 Barre latérale des serveurs -->
         <Border Grid.Column="0" Background="#23272A">
-            <StackPanel VerticalAlignment="Top" Margin="10">
-                <Button Content="🏠" Style="{StaticResource RoundButtonStyle}" Click="OnServerButtonClick"/>
-                <!-- Ajout d'un espace de marge entre les deux boutons -->
-                <Button Content="🔍" Style="{StaticResource RoundButtonStyle}" Click="OnSearchUsersButtonClick" Margin="0,10,0,0"/>
+            <StackPanel VerticalAlignment="Top" Margin="10">  
+               <Button Content="🏠" Style="{StaticResource RoundButtonStyle}" Click="OnServerButtonClick"/> 
+               <Button Content="👥" Style="{StaticResource RoundButtonStyle}" Click="OnSearchUsersButtonClick" Margin="0,10,0,0"/>
+               <Button Content="👤" Style="{StaticResource RoundButtonStyle}" Click="OnShowUsersButtonClick" Margin="0,10,0,0"/>  
             </StackPanel>
         </Border>
 

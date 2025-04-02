@@ -49,11 +49,12 @@ namespace DiscordLikeChatApp.Views {
 
         // Envoi d'un message via POST
         private async void OnSendButtonClick(object sender, RoutedEventArgs e) {
+            var channelId = Guid.Parse(ChannelId);
             string messageText = MessageTextBox.Text;
             if (!string.IsNullOrEmpty(messageText)) {
                 var messageRequest = new Message {
-                    ChannelId = Guid.Parse(ChannelId), // Utilise la propriété ChannelId convertie en Guid
-                    Content = messageText,
+                    ChannelId = channelId,
+                    Content = messageText
                 };
 
                 try {

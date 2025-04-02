@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using DiscordFrontEnd.Models;
 using DiscordLikeChatApp.Models;
 using DiscordLikeChatApp.Services;
 using DiscordLikeChatApp.Views.Components;
@@ -14,7 +16,7 @@ namespace DiscordLikeChatApp.Views {
         private readonly UserSession _userSession;
         private string _username;
         private readonly ApiService _apiService;
-        private string _currentServerId; // Pour stocker le serveur courant
+        private string _currentServerId;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -67,7 +69,7 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
-        private async Task LoadChannels(string serverId) {
+        private async System.Threading.Tasks.Task LoadChannels(string serverId) {
             // Masquer la liste des amis
             FriendsListBox.Visibility = Visibility.Collapsed;
             FriendsListBox.Items.Clear();
@@ -144,7 +146,7 @@ namespace DiscordLikeChatApp.Views {
             if (inputDialog.ShowDialog() == true) {
                 string newChannelName = inputDialog.ResponseText;
                 string description = "General discussion";
-                string type = "TEXT"; 
+                string type = "TEXT";
 
                 // Appeler l'API pour créer le canal
                 var newChannel = await _apiService.CreateChannelAsync(newChannelName, description, type);
@@ -172,21 +174,66 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private void AssignAdminRoleToUser() {
-            // Logique pour attribuer le rôle d'administrateur à l'utilisateur
-           //TODO
+            // Logique pour attribuer le rôle d'administrateur à l'utilisateur (à compléter)
         }
 
-        private void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
-            // Effacer les informations du serveur et des canaux
-            ChannelStackPanel.Children.Clear();
+        // Nouveau bouton : Afficher tous les utilisateurs et permettre d'ajouter des amis
+        private async void OnShowUsersButtonClick(object sender, RoutedEventArgs e) {
+            try {
+                // Appel à l'API pour récupérer la liste de tous les utilisateurs
+                var users = await _apiService.GetAsync<List<User>>("/users");
 
-            // Logique pour rechercher des utilisateurs
-            List<string> friends = new List<string> { "Ami1 (En ligne)", "Ami2 (Hors ligne)", "Ami3 (En ligne)" };
-            FriendsListBox.Items.Clear();
-            foreach (var friend in friends) {
-                FriendsListBox.Items.Add(new ListBoxItem { Content = friend });
+                // On utilise FriendsListBox pour afficher la liste des utilisateurs
+                FriendsListBox.Items.Clear();
+                FriendsListBox.Visibility = Visibility.Visible;
+
+                foreach (var user in users) {
+                    var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
+                    var userText = new TextBlock {
+                        Text = user.Username,
+                        Width = 150,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    var addFriendButton = new Button {
+                        Content = "Ajouter en ami",
+                        Margin = new Thickness(5)
+                    };
+                    addFriendButton.Click += (s, args) => AddFriend(user);
+                    panel.Children.Add(userText);
+                    panel.Children.Add(addFriendButton);
+
+                    FriendsListBox.Items.Add(new ListBoxItem { Content = panel });
+                }
             }
-            FriendsListBox.Visibility = Visibility.Visible;
+            catch (Exception ex) {
+                MessageBox.Show("Erreur lors du chargement des utilisateurs: " + ex.Message);
+            }
+        }
+
+        // Méthode pour ajouter un utilisateur en ami
+        private async void AddFriend(User user) {
+            try {
+                // Prépare le payload ; j'assume ici que le payload est { friendId: <id> }
+                var payload = new {
+                    friendId = user.Id
+                };
+                // Appel POST à l'endpoint pour ajouter un ami (à adapter selon ton API)
+                bool success = await _apiService.PostAsync<object, bool>("/friends", payload);
+                if (success) {
+                    MessageBox.Show($"{user.Username} a été ajouté en ami.");
+                }
+                else {
+                    MessageBox.Show("Erreur lors de l'ajout en ami.");
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Erreur: " + ex.Message);
+            }
+        }
+
+        // (Si tu utilises déjà OnSearchUsersButtonClick, tu peux la renommer en OnShowUsersButtonClick ou la conserver)
+        private void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
+            OnShowUsersButtonClick(sender, e);
         }
     }
 }

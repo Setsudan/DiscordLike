@@ -27,7 +27,6 @@ namespace DiscordLikeChatApp.Views {
             try {
                 AccessTokenResponse response = await _authService.LoginAsync(username, password);
                 if (response.IsSuccess) {
-                    MessageBox.Show("Connexion réussie.");
                     _userSession.Set("Username", username);
                     _userSession.Set("Authorization", response.AccessToken);
                 }
