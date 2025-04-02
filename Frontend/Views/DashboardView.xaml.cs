@@ -135,7 +135,7 @@ namespace DiscordLikeChatApp.Views {
             FriendsListBox.Items.Clear();
 
             MainGrid.Children.Clear();
-            MainGrid.Children.Add(new ChatView());
+            MainGrid.Children.Add(new ChatView(_apiService, channelId));
         }
 
         private async void OnCreateChannelButtonClick(object sender, RoutedEventArgs e) {
