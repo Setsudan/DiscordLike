@@ -3,59 +3,95 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DiscordLikeChatApp.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#2C2F33">
+
+    <UserControl.Resources>
+        <!-- Effet d'ombre pour les boutons -->
+        <DropShadowEffect x:Key="ButtonShadow" Color="Black" BlurRadius="8" Opacity="0.3"/>
+
+        <!-- Style des Boutons ronds -->
+        <Style x:Key="RoundButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="#7289DA"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect" Value="{StaticResource ButtonShadow}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="25">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6EA6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Style des TextBlocks -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="60" />
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="80"/>
+            <!-- Ajusté pour une meilleure visibilité -->
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Barre latérale des serveurs -->
-        <StackPanel Grid.Column="0" Background="#2C2F33">
-            <Button Content="1" Width="50" Height="50" Margin="5" Background="#7289DA" Foreground="White" FontSize="24" Click="OnServerButtonClick">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="25">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <Button Content="Search" Width="50" Height="50" Margin="5" Background="#7289DA" Foreground="White" FontSize="12" Click="OnSearchUsersButtonClick">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="25">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </StackPanel>
+        <!-- 🌟 Barre latérale des serveurs -->
+        <Border Grid.Column="0" Background="#23272A">
+            <StackPanel VerticalAlignment="Top" Margin="10">
+                <Button Content="🏠" Style="{StaticResource RoundButtonStyle}" Click="OnServerButtonClick"/>
+                <!-- Ajout d'un espace de marge entre les deux boutons -->
+                <Button Content="🔍" Style="{StaticResource RoundButtonStyle}" Click="OnSearchUsersButtonClick" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
 
-        <!-- Barre latérale des canaux -->
-        <StackPanel x:Name="ChannelStackPanel" Grid.Column="1" Background="#2F3136">
-            <TextBlock Text="Serveur" Foreground="White" FontSize="20" Margin="10" />
-            <Button Content="# général" Margin="10" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Click="OnChannelButtonClick" />
-            <!-- Bouton pour créer un nouveau canal -->
-            <Button Content="+ Ajouter un nouveau canal" Margin="10" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Click="OnCreateChannelButtonClick" />
-            <!-- Liste des amis -->
-            <ListBox x:Name="FriendsListBox" Visibility="Collapsed" Background="#2F3136" Foreground="White" Margin="10"/>
-        </StackPanel>
 
-        <!-- Zone principale -->
+        <!-- 🛎️ Barre latérale des canaux -->
+        <Border Grid.Column="1" Background="#2F3136">
+            <StackPanel Margin="10">
+                <TextBlock Text="Serveur" FontSize="20" FontWeight="Bold"/>
+                <Button Content="# Général" Background="Transparent" Foreground="White" Click="OnChannelButtonClick"/>
+                <Button Content="+ Ajouter un canal" Background="Transparent" Foreground="White" Click="OnCreateChannelButtonClick"/>
+                <ListBox x:Name="FriendsListBox" Visibility="Collapsed" Background="#2F3136" Foreground="White"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 📜 Zone principale -->
         <Grid x:Name="MainGrid" Grid.Column="2" Background="#36393F">
-            <TextBlock Text="Bienvenue sur le tableau de bord" FontSize="16" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <TextBlock Text="Bienvenue sur le tableau de bord" FontSize="18" FontWeight="Bold"
+                       Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
 
-        <!-- Nom d'utilisateur, statut et avatar -->
-        <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Background="#2C2F33" Margin="5" Orientation="Horizontal">
-            <Ellipse Width="10" Height="10" Fill="Green" Margin="5" VerticalAlignment="Center" />
-            <TextBlock x:Name="UserNameTextBlock" Text="Nom d'utilisateur" Foreground="White" FontSize="8" Margin="5" VerticalAlignment="Center" />
-            <TextBlock x:Name="UserStatusTextBlock" Text="Statut" Foreground="White" FontSize="8" Margin="5" VerticalAlignment="Center" />
-            <Button Content="⚙" Width="20" Height="20" Background="Transparent" Foreground="White" Click="OnUserSettingsButtonClick" Margin="5"/>
-        </StackPanel>
+        <!-- 👤 Profil utilisateur en bas -->
+        <Border Grid.Column="1" VerticalAlignment="Bottom" Background="#23272A">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <!-- Cercle vert avec largeur et hauteur égales -->
+                <Ellipse Width="15" Height="15" Fill="Green" Margin="5"/>
+                <!-- Avatar -->
+                <TextBlock x:Name="UserNameTextBlock" Text="Nom d'utilisateur" FontSize="12"/>
+                <TextBlock x:Name="UserStatusTextBlock" Text="Statut" FontSize="12"/>
+                <Button Content="⚙" Width="24" Height="24" Background="Transparent" Foreground="White" Click="OnUserSettingsButtonClick"/>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </UserControl>
