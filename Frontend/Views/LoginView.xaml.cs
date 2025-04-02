@@ -12,11 +12,13 @@ namespace DiscordLikeChatApp.Views {
     /// </summary>
     public partial class LoginView : UserControl {
         private readonly AuthService _authService;
+        private readonly UserSession _userSession;
 
         public LoginView() {
             InitializeComponent();
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             _authService = new AuthService(configuration, new HttpClient());
+            _userSession = new UserSession();
         }
 
         private async Task<bool> LoginAsync(string username, string password) {
@@ -24,6 +26,7 @@ namespace DiscordLikeChatApp.Views {
                 bool success = await _authService.LoginAsync(username, password);
                 if (success) {
                     MessageBox.Show("Connexion réussie.");
+                    _userSession.Set("Username", username);
                 }
                 else {
                     MessageBox.Show("Connexion échouée. Veuillez réessayer.");
@@ -44,7 +47,7 @@ namespace DiscordLikeChatApp.Views {
 
             if (success) {
                 MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.Content = new DashboardView();
+                mainWindow.Content = new DashboardView(_userSession);
             }
         }
 

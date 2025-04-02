@@ -17,6 +17,7 @@ namespace DiscordLikeChatApp.Views {
         protected void OnPropertyChanged(string propertyName) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public string Username {
             get => _username;
             set {
@@ -24,14 +25,17 @@ namespace DiscordLikeChatApp.Views {
                 OnPropertyChanged(nameof(Username));
             }
         }
-        public DashboardView() {
+
+        public DashboardView(UserSession userSession) {
             InitializeComponent();
+            _userSession = userSession;
             InitializeUserDetails();
         }
 
         private void InitializeUserDetails() {
-            UserNameTextBlock.Text = "123";
-            UserStatusTextBlock.Text = "En ligne"; 
+            Username = _userSession.Get<string>("Username");
+            UserNameTextBlock.Text = Username;
+            UserStatusTextBlock.Text = "En ligne";
         }
 
         private void OnServerButtonClick(object sender, RoutedEventArgs e) {
