@@ -4,39 +4,110 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#2C2F33">
+
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <Border Background="#23272A" 
+                Padding="30" 
+                CornerRadius="12" 
+                Width="350"
+                BorderBrush="#7289DA"
+                BorderThickness="2">
 
-        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Inscription" FontSize="24" Margin="0,0,0,20" HorizontalAlignment="Center" />
-            <TextBlock Text="Nom d'utilisateur :" Margin="0,0,0,5" HorizontalAlignment="Center" />
-            <TextBox Name="UsernameTextBox" Margin="0,0,0,10" Width="200" />
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <!-- Titre -->
+                <TextBlock Text="Créer un compte" 
+                           FontSize="22" 
+                           FontWeight="Bold" 
+                           Foreground="White" 
+                           TextAlignment="Center" 
+                           Margin="0,0,0,20" />
 
-            <TextBlock Text="Email :" Margin="0,0,0,5" HorizontalAlignment="Center" />
-            <TextBox Name="EmailTextBox" Margin="0,0,0,10" Width="200" />
+                <!-- Champ Nom d'utilisateur -->
+                <TextBlock Text="Nom d'utilisateur :" Foreground="White" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                    <TextBox Name="UsernameTextBox" 
+                             Width="270" 
+                             Height="30" 
+                             FontSize="14"
+                             Foreground="White"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="5"/>
+                </Border>
 
-            <TextBlock Text="Mot de passe :" Margin="0,0,0,5" HorizontalAlignment="Center" />
-            <PasswordBox Name="PasswordBox" Margin="0,0,0,10" Width="200" />
+                <!-- Champ Email -->
+                <TextBlock Text="Email :" Foreground="White" Margin="10,0,0,5" HorizontalAlignment="Left"/>
+                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                    <TextBox Name="EmailTextBox" 
+                             Width="270" 
+                             Height="30" 
+                             FontSize="14"
+                             Foreground="White"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="5"/>
+                </Border>
 
-            <TextBlock Text="Rôles (séparés par des virgules, par défaut USER) :" Margin="0,0,0,5" HorizontalAlignment="Center" />
-            <TextBox Name="RolesTextBox" Margin="0,0,0,10" Width="200" />
+                <!-- Champ Mot de passe -->
+                <TextBlock Text="Mot de passe :" Foreground="White" Margin="10,0,0,5" HorizontalAlignment="Left"/>
+                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                    <PasswordBox Name="PasswordBox" 
+                                 Width="270" 
+                                 Height="30" 
+                                 FontSize="14"
+                                 Foreground="White"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="5"/>
+                </Border>
 
-            <Button Content="S'inscrire" Width="100" Height="25" HorizontalAlignment="Center" Click="SignupButton_Click"/>
-            <TextBlock HorizontalAlignment="Center" Margin="10,0,0,0">
-                <Hyperlink NavigateUri="login" RequestNavigate="Hyperlink_RequestNavigate">
-                    Déjà inscrit ? Connectez-vous ici
-                </Hyperlink>
-            </TextBlock>
-        </StackPanel>
+                <!-- Champ Rôles -->
+                <TextBlock Text="Rôles (USER par défaut) :" Foreground="White" Margin="10,0,0,5" HorizontalAlignment="Left"/>
+                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                    <TextBox Name="RolesTextBox" 
+                             Width="270" 
+                             Height="30" 
+                             FontSize="14"
+                             Foreground="White"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="5"/>
+                </Border>
+
+                <!-- Bouton S'inscrire -->
+                <Button Content="S'inscrire" 
+                        Width="280" 
+                        Height="40" 
+                        FontSize="16" 
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Background="#5865F2"
+                        BorderBrush="Transparent"
+                        Cursor="Hand"
+                        Margin="15,15,15,5"
+                        Click="SignupButton_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="8"
+                                    Padding="10">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Lien vers la connexion -->
+                <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    Déjà inscrit ?  
+                    <Hyperlink NavigateUri="login" RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock Foreground="#7289DA">Connectez-vous ici</TextBlock>
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
