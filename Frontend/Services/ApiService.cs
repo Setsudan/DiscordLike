@@ -16,40 +16,40 @@ namespace DiscordLikeChatApp.Services {
                 BaseAddress = new Uri("http://localhost:8080/")
             };
 
-            // Configure les en-têtes par défaut (ici, on accepte du JSON)
+            // Configure les en-têtes par défaut 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        // Méthode GET générique
+        // Méthode GET
         public async Task<T> GetAsync<T>(string endpoint) {
             var response = await _httpClient.GetAsync(endpoint);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        // Méthode POST générique
+        // Méthode POST 
         public async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest data) {
             var response = await _httpClient.PostAsJsonAsync(endpoint, data);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TResponse>();
         }
 
-        // Méthode PUT générique
+        // Méthode PUT 
         public async Task<TResponse> PutAsync<TRequest, TResponse>(string endpoint, TRequest data) {
             var response = await _httpClient.PutAsJsonAsync(endpoint, data);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TResponse>();
         }
 
-        // Méthode DELETE générique
+        // Méthode DELETE 
         public async Task<bool> DeleteAsync(string endpoint) {
             var response = await _httpClient.DeleteAsync(endpoint);
             response.EnsureSuccessStatusCode();
             return response.IsSuccessStatusCode;
         }
 
-        // Méthode PATCH générique (HttpClient ne possède pas de méthode Patch par défaut)
+        // Méthode PATCH générique (HttpClient ne possède pas de méthode Patch par défaut) donc a tester
         public async Task<TResponse> PatchAsync<TRequest, TResponse>(string endpoint, TRequest data) {
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), endpoint) {
                 Content = JsonContent.Create(data)
@@ -64,7 +64,7 @@ namespace DiscordLikeChatApp.Services {
             return await GetAsync<List<Server>>("api/servers");
         }
 
-        // Exemple de méthode pour créer un nouveau canal dans un serveur
+        // créer un nouveau canal dans un serveur a corriger avec le bon endpoint
         public async Task<Channel> CreateChannelAsync(string serverId, string channelName) {
             var payload = new {
                 name = channelName
@@ -85,10 +85,6 @@ namespace DiscordLikeChatApp.Services {
             return await PutAsync<object, Channel>($"api/servers/{serverId}/channels/{channelId}", payload);
         }
 
-        // Exemple de méthode pour appliquer un patch sur un canal
-        public async Task<Channel> PatchChannelAsync(string serverId, string channelId, object patchData) {
-            return await PatchAsync<object, Channel>($"api/servers/{serverId}/channels/{channelId}", patchData);
-        }
     
      public async Task<bool> LoginAsync(string username, string password) {
             var payload = new {
