@@ -5,36 +5,203 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DiscordLikeChatApp.Views.Components"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <StackPanel>
-            <!-- Liste des membres du salon -->
-            <TextBlock Text="Membres du Salon" FontSize="16" FontWeight="Bold" Margin="10"/>
-            <ListBox x:Name="MembersListBox" Margin="10">
-                <!-- Exemple de membre -->
-                <ListBoxItem Content="Utilisateur1 (Admin)"/>
-                <ListBoxItem Content="Utilisateur2 (Modérateur)"/>
-                <ListBoxItem Content="Utilisateur3 (Membre)"/>
-            </ListBox>
+             Background="#2C2F33" d:DesignWidth="800" Height="824">
 
-            <!-- Actions de modération -->
-            <TextBlock Text="Actions de Modération" FontSize="16" FontWeight="Bold" Margin="10"/>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Button Content="Nommer Modérateur" Click="OnPromoteToModeratorClick" Margin="5"/>
-                <Button Content="Retirer Modérateur" Click="OnDemoteFromModeratorClick" Margin="5"/>
-                <Button Content="Bloquer/Bannir" Click="OnBanUserClick" Margin="5"/>
-            </StackPanel>
+    <UserControl.Resources>
+        <!-- Style pour les TextBlock de titre -->
+        <Style x:Key="TitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,20,0,15"/>
+        </Style>
 
-            <!-- Outils d’administration -->
-            <TextBlock Text="Outils d’Administration" FontSize="16" FontWeight="Bold" Margin="10"/>
-            <StackPanel Margin="10">
-                <TextBlock Text="Nom du Salon" Margin="5"/>
-                <TextBox x:Name="ChannelNameTextBox" Margin="5"/>
-                <TextBlock Text="Description du Salon" Margin="5"/>
-                <TextBox x:Name="ChannelDescriptionTextBox" Margin="5"/>
-                <Button Content="Enregistrer les Modifications" Click="OnSaveChannelSettingsClick" Margin="5"/>
+        <!-- Style pour les TextBlock de label -->
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B9BBBE"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <!-- Style pour les TextBox -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#40444B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="5">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour la ListBox -->
+        <Style x:Key="ModernListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#40444B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer>
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour les ListBoxItem -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Background="Transparent" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#5865F2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4752C4"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour les boutons -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#5865F2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="25,12"/>
+            <!-- Padding augmenté -->
+            <Setter Property="FontSize" Value="16"/>
+            <!-- Taille de police augmentée -->
+            <Setter Property="MinWidth" Value="180"/>
+            <!-- Largeur minimale ajoutée -->
+            <Setter Property="MinHeight" Value="45"/>
+            <!-- Hauteur minimale ajoutée -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="6">
+                            <!-- Coins arrondis légèrement augmentés -->
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"
+                                    Margin="5"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4752C4"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#3C45A5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="#23272A" CornerRadius="8" Margin="20">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="30">
+                <!-- Liste des membres du salon -->
+                <TextBlock Text="Membres du Salon" 
+                         Style="{StaticResource TitleStyle}"/>
+
+                <ListBox x:Name="MembersListBox" 
+                         Style="{StaticResource ModernListBoxStyle}"
+                         Margin="0,0,0,30"
+                         Height="150">
+                    <ListBoxItem Content="Utilisateur1 (Admin)"/>
+                    <ListBoxItem Content="Utilisateur2 (Modérateur)"/>
+                    <ListBoxItem Content="Utilisateur3 (Membre)"/>
+                </ListBox>
+
+                <!-- Actions de modération -->
+                <TextBlock Text="Actions de Modération" 
+                         Style="{StaticResource TitleStyle}"/>
+
+                <WrapPanel Margin="0,0,0,30">
+                    <Button Content="Nommer Modérateur" 
+                            Style="{StaticResource ModernButtonStyle}"
+                            Click="OnPromoteToModeratorClick" 
+                            Margin="0,0,10,10"/>
+                    <Button Content="Retirer Modérateur" 
+                            Style="{StaticResource ModernButtonStyle}"
+                            Click="OnDemoteFromModeratorClick" 
+                            Margin="0,0,10,10"/>
+                    <Button Content="Bloquer/Bannir" 
+                            Style="{StaticResource ModernButtonStyle}"
+                            Click="OnBanUserClick" 
+                            Margin="0,0,10,10"/>
+                </WrapPanel>
+
+                <!-- Outils d'administration -->
+                <TextBlock Text="Outils d'Administration" 
+                         Style="{StaticResource TitleStyle}"/>
+
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Nom du Salon :" 
+                             Style="{StaticResource LabelStyle}"
+                             Grid.Row="0" Grid.Column="0"/>
+                    <TextBox x:Name="ChannelNameTextBox"
+                            Style="{StaticResource ModernTextBoxStyle}"
+                            Grid.Row="0" Grid.Column="1"
+                            Margin="10,5,0,15"/>
+
+                    <TextBlock Text="Description :" 
+                             Style="{StaticResource LabelStyle}"
+                             Grid.Row="1" Grid.Column="0"/>
+                    <TextBox x:Name="ChannelDescriptionTextBox"
+                            Style="{StaticResource ModernTextBoxStyle}"
+                            Grid.Row="1" Grid.Column="1"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            Height="100"
+                            Margin="10,5,0,15"/>
+
+                    <Button Content="Enregistrer les Modifications"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Grid.Row="2" Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Click="OnSaveChannelSettingsClick"
+                            Margin="10,10,0,0"/>
+                </Grid>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </ScrollViewer>
+    </Border>
 </UserControl>
-

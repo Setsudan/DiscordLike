@@ -4,20 +4,121 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#2C2F33">
+
+    <UserControl.Resources>
+        <!-- Style pour le ListBox des messages -->
+        <Style x:Key="MessageListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#23272A"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="12">
+                            <ScrollViewer Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour la TextBox de message -->
+        <Style x:Key="MessageTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#40444B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="5">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style pour le bouton d'envoi -->
+        <Style x:Key="SendButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#5865F2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4752C4"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#3A42A5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Zone des messages -->
-        <ListBox x:Name="MessagesListBox" Grid.Row="0" Background="#2F3136" Foreground="White" />
+        <ListBox x:Name="MessagesListBox" 
+                 Grid.Row="0" 
+                 Style="{StaticResource MessageListBoxStyle}"
+                 Margin="0,0,0,15"/>
 
         <!-- Zone de saisie du message -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Background="#40444B">  
-           <TextBox x:Name="MessageTextBox" Width="650" Margin="10" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />  
-           <Button Content="Envoyer" Width="100" Margin="10" Click="OnSendButtonClick" />  
-        </StackPanel>
+        <Border Grid.Row="1" 
+                Background="#23272A"
+                CornerRadius="12"
+                Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="MessageTextBox"
+                        Grid.Column="0"
+                        Style="{StaticResource MessageTextBoxStyle}"
+                        Height="Auto"
+                        MinHeight="45"
+                        MaxHeight="120"
+                        Margin="0,0,100,0"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalContentAlignment="Center"/>
+
+                <Button
+                        Content="Envoyer"
+                        Style="{StaticResource SendButtonStyle}"
+                        Click="OnSendButtonClick" Margin="662,10,0,10" Grid.ColumnSpan="2"/>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
