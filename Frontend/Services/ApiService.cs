@@ -6,14 +6,16 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using DiscordFrontEnd.Models;
 using DiscordLikeChatApp.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DiscordLikeChatApp.Services {
     public class ApiService {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
         public ApiService() {
             _httpClient = new HttpClient {
-                BaseAddress = new Uri("http://localhost:8080/")
+                BaseAddress = new Uri(_configuration["ApiUrl"])
             };
 
             // Configure les en-têtes par défaut 
@@ -64,7 +66,7 @@ namespace DiscordLikeChatApp.Services {
             return await GetAsync<List<Server>>("api/servers");
         }
 
-        // créer un nouveau canal dans un serveur a corriger avec le bon endpoint
+        // créer un nouveau canal dans un serveur a corriger avec le bon endpointRe
         public async Task<Channel> CreateChannelAsync(string serverId, string channelName) {
             var payload = new {
                 name = channelName
@@ -83,15 +85,6 @@ namespace DiscordLikeChatApp.Services {
                 name = newChannelName
             };
             return await PutAsync<object, Channel>($"api/servers/{serverId}/channels/{channelId}", payload);
-        }
-
-    
-     public async Task<bool> LoginAsync(string username, string password) {
-            var payload = new {
-                Username = username,
-                Password = password
-            };
-            return await PostAsync<object, bool>("api/login", payload);
         }
     }
 }
