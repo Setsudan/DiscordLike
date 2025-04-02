@@ -9,74 +9,60 @@
              Background="#2C2F33">
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Border Background="#23272A" 
-                Padding="30" 
-                CornerRadius="12" 
-                Width="350"
-                BorderBrush="#7289DA"
-                BorderThickness="2">
+        <Border Background="#23272A" Padding="30" CornerRadius="12"
+                MinWidth="300" MaxWidth="400" BorderBrush="#7289DA" BorderThickness="2">
 
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <!-- Titre -->
                 <TextBlock Text="Bienvenue sur DiscordLikeChatApp" 
-                           FontSize="22" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           TextAlignment="Center" 
+                           FontSize="22" FontWeight="Bold" Foreground="White" 
+                           TextAlignment="Center" TextWrapping="Wrap"
                            Margin="0,0,0,20" />
 
                 <!-- Champ Nom d'utilisateur -->
-                <TextBlock Text="Nom d'utilisateur :" Foreground="White" Margin="0,0,0,5" HorizontalAlignment="Left"/>
-                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                <TextBlock Text="Nom d'utilisateur :" Foreground="White" Margin="0,0,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
                     <TextBox Name="UsernameTextBox" 
-                             Width="270" 
-                             Height="30" 
-                             FontSize="14"
-                             Foreground="White"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             Padding="5"/>
+                             Height="35" FontSize="14"
+                             Foreground="White" Background="Transparent"
+                             BorderThickness="0" Padding="5"/>
                 </Border>
 
                 <!-- Champ Mot de passe -->
-                <TextBlock Text="Mot de passe :" Foreground="White" Margin="0,10,0,5" HorizontalAlignment="Left"/>
-                <Border Background="#40444B" CornerRadius="8" Padding="5">
+                <TextBlock Text="Mot de passe :" Foreground="White" Margin="0,10,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
                     <PasswordBox Name="PasswordBox" 
-                                 Width="270" 
-                                 Height="30" 
-                                 FontSize="14"
-                                 Foreground="White"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 Padding="5"/>
+                                 Height="35" FontSize="14"
+                                 Foreground="White" Background="Transparent"
+                                 BorderThickness="0" Padding="5"/>
                 </Border>
 
                 <!-- Bouton Se connecter -->
-                <Button Content="Se connecter" 
-                    Width="280" 
-                    Height="40" 
-                    FontSize="16" 
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Background="#5865F2"
-                    BorderBrush="Transparent"
-                    Cursor="Hand"
-                    Margin="15,15,15,5"
-                    Click="Button_Click">           
+                <Button Content="Se connecter" Height="45"
+                        FontSize="16" FontWeight="Bold"
+                        Foreground="White" Background="#5865F2"
+                        BorderBrush="Transparent" Cursor="Hand"
+                        Margin="0,20,0,5" Click="Button_Click">
+
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" 
-                    CornerRadius="8" 
-                    BorderBrush="Transparent">
+                                    CornerRadius="20" BorderBrush="Transparent">
                                 <Grid>
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
                             </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#4752C4"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#3A42A5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-
 
                 <!-- Lien d'inscription -->
                 <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0">
