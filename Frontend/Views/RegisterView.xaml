@@ -28,9 +28,6 @@
             <TextBlock Text="Mot de passe :" Margin="0,0,0,5" HorizontalAlignment="Center" />
             <PasswordBox Name="PasswordBox" Margin="0,0,0,10" Width="200" />
 
-            <TextBlock Text="Rôles (séparés par des virgules, par défaut USER) :" Margin="0,0,0,5" HorizontalAlignment="Center" />
-            <TextBox Name="RolesTextBox" Margin="0,0,0,10" Width="200" />
-
             <Button Content="S'inscrire" Width="100" Height="25" HorizontalAlignment="Center" Click="SignupButton_Click"/>
             <TextBlock HorizontalAlignment="Center" Margin="10,0,0,0">
                 <Hyperlink NavigateUri="login" RequestNavigate="Hyperlink_RequestNavigate">
