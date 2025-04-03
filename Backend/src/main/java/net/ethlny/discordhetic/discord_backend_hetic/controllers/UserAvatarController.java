@@ -1,22 +1,32 @@
 package net.ethlny.discordhetic.discord_backend_hetic.controllers;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.ethlny.discordhetic.discord_backend_hetic.models.User;
 import net.ethlny.discordhetic.discord_backend_hetic.payload.StandardResponse;
 import net.ethlny.discordhetic.discord_backend_hetic.repositories.UserRepository;
 import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsImpl;
 import net.ethlny.discordhetic.discord_backend_hetic.services.avatar.AvatarService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/users/me/avatar")
+@Tag(name = "Avatar", description = "Upload d'avatar pour l'utilisateur connecté")
 public class UserAvatarController {
 
     private final AvatarService avatarService;
@@ -29,6 +39,22 @@ public class UserAvatarController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+    summary = "Uploader un avatar",
+    description = "Permet à l'utilisateur actuellement connecté d'uploader une image comme avatar (format image uniquement, max 500MB).",
+    requestBody = @RequestBody(
+        required = true,
+        content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ),
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Avatar uploadé avec succès",
+            content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Fichier invalide ou trop volumineux",
+            content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Erreur lors de l'upload",
+            content = @Content(schema = @Schema(implementation = StandardResponse.class)))
+        }
+    )
     public StandardResponse uploadAvatar(@AuthenticationPrincipal UserDetailsImpl currentUser,
             @RequestParam("file") MultipartFile file) {
         // Validate file size
