@@ -1,11 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using DiscordLikeChatApp.Services;
 
 namespace DiscordLikeChatApp.Views.Components {
     /// <summary>
     /// Logique d'interaction pour UserSettings.xaml
     /// </summary>
     public partial class UserSettings : UserControl {
+        private readonly ApiService _apiService;
         public UserSettings() {
             InitializeComponent();
         }

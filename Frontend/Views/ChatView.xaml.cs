@@ -24,7 +24,7 @@ namespace DiscordLikeChatApp.Views {
             _webSocketClientService = new WebSocketClientService();
             _webSocketClientService.MessageReceived += OnWebSocketMessageReceived;
             try {
-                await _webSocketClientService.ConnectAsync("ws://localhost:8080/ws");
+                await _webSocketClientService.ConnectAsync("wss://discord-backend.ethlny.net/ws");
             }
             catch (Exception ex) {
                 MessageBox.Show("Erreur de connexion WebSocket : " + ex.Message);
