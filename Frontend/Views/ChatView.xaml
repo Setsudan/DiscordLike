@@ -56,6 +56,8 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="MinHeight" Value="45"/>
             <Setter Property="Padding" Value="20,10"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -80,7 +82,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="15">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -90,35 +92,29 @@
         <ListBox x:Name="MessagesListBox" 
                  Grid.Row="0" 
                  Style="{StaticResource MessageListBoxStyle}"
-                 Margin="0,0,0,15"/>
+                 Margin="15"/>
 
         <!-- Zone de saisie du message -->
         <Border Grid.Row="1" 
                 Background="#23272A"
                 CornerRadius="12"
-                Padding="15">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                Margin="15">
+            <DockPanel LastChildFill="True" 
+                       Margin="15">
+                <Button DockPanel.Dock="Right"
+                        Content="Envoyer"
+                        Style="{StaticResource SendButtonStyle}"
+                        Click="OnSendButtonClick"
+                        Margin="15,0,0,0"/>
 
                 <TextBox x:Name="MessageTextBox"
-                        Grid.Column="0"
                         Style="{StaticResource MessageTextBoxStyle}"
-                        Height="Auto"
                         MinHeight="45"
                         MaxHeight="120"
-                        Margin="0,0,100,0"
                         TextWrapping="Wrap"
                         AcceptsReturn="True"
                         VerticalContentAlignment="Center"/>
-
-                <Button
-                        Content="Envoyer"
-                        Style="{StaticResource SendButtonStyle}"
-                        Click="OnSendButtonClick" Margin="662,10,0,10" Grid.ColumnSpan="2"/>
-            </Grid>
+            </DockPanel>
         </Border>
     </Grid>
 </UserControl>
