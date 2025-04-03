@@ -3,6 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
 using DiscordLikeChatApp.Services;
+using DiscordLikeChatApp.Models;
+using System.Threading.Channels;
+using System.Text.Json;
+
 
 namespace DiscordLikeChatApp.Views {
     public partial class ChatView : UserControl {
@@ -19,6 +23,7 @@ namespace DiscordLikeChatApp.Views {
         public ChatView(ApiService apiService, string channelId) : this() {
             _apiService = apiService;
             ChannelId = channelId;
+
         }
         private async void InitializeWebSocket() {
             _webSocketClientService = new WebSocketClientService();
@@ -33,7 +38,6 @@ namespace DiscordLikeChatApp.Views {
 
         // Méthode appelée quand un message est reçu
         private void OnWebSocketMessageReceived(string message) {
-            // Utilisation du Dispatcher pour mettre à jour l'interface utilisateur depuis un thread non-UI.
             Dispatcher.Invoke(() => {
                 MessagesListBox.Items.Add(message);
             });
@@ -44,13 +48,27 @@ namespace DiscordLikeChatApp.Views {
             string messageText = MessageTextBox.Text;
             if (!string.IsNullOrEmpty(messageText)) {
                 try {
-                    await _webSocketClientService.SendMessageAsync(messageText);
+                    var message = new {
+                        content = messageText,
+                        timestamp = DateTime.UtcNow
+                    };
+                    string jsonMessage = System.Text.Json.JsonSerializer.Serialize(message);
+                    await _webSocketClientService.SendMessageAsync(jsonMessage);
                     MessageTextBox.Clear();
+                    Console.WriteLine(jsonMessage);
+
+                    // Ajoutez immédiatement le message à la ListBox pour l'afficher
+                    // Vous pouvez formater l'affichage comme vous le souhaitez.
+                    MessagesListBox.Items.Add($"Moi: {messageText}");
                 }
                 catch (Exception ex) {
                     MessageBox.Show("Erreur lors de l'envoi du message : " + ex.Message);
                 }
             }
         }
+        //private async void GetChannelMessages(string channelId) {
+        //    var messages = await _apiService.GetAsync<Message>($"messages/channel/{channelId}");
+        //    Console.WriteLine(messages);
+        //}
     }
 }

@@ -35,9 +35,8 @@ namespace DiscordLikeChatApp.Views.Components {
                 // Appel GET sur "/users/me"
                 User currentUser = await _apiService.GetAsync<User>("/users/me");
                 // Mettre à jour l'interface (TextBox, etc.)
-                UserNameTextBox.Text = currentUser.Username;
+                UserNameTextBox.Text = currentUser.DisplayName;
                 UserEmailTextBox.Text = currentUser.Email;
-                // Vous pouvez également afficher DisplayName, AvatarUrl, etc.
             }
             catch (Exception ex) {
                 MessageBox.Show("Erreur lors du chargement de vos informations : " + ex.Message);
@@ -48,9 +47,8 @@ namespace DiscordLikeChatApp.Views.Components {
         private async void OnSaveSettingsClick(object sender, RoutedEventArgs e) {
             try {
                 var updatedUser = new User {
-                    Username = UserNameTextBox.Text,
+                   DisplayName = UserNameTextBox.Text,
                     Email = UserEmailTextBox.Text,
-                    // Ajoutez d'autres propriétés modifiables si nécessaire.
                 };
 
                 // Appel PUT sur "/users/me"

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="9.2.1" />
+    <PackageReference Include="Apache.NMS" Version="2.1.0" />
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3" />
