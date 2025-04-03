@@ -16,7 +16,7 @@ namespace DiscordLikeChatApp.Services {
         public ApiService(IConfiguration configuration, string authToken) {
             _configuration = configuration;
             _httpClient = new HttpClient {
-                BaseAddress = new Uri("http://localhost:8080")
+                BaseAddress = new Uri("https://discord-backend.ethlny.net/")
             };
 
             // Configure les en-têtes par défaut 

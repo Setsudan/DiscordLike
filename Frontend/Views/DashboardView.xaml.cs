@@ -32,12 +32,21 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
+        // Constructeur avec paramètres (utilisé dans le code-behind)
         public DashboardView(UserSession userSession, IConfiguration configuration) {
             InitializeComponent();
             _userSession = userSession;
             string authToken = _userSession.Get<string>("Authorization");
             _apiService = new ApiService(configuration, authToken);
             InitializeUserDetails();
+            // Atterrir directement sur un serveur par défaut (exemple : "1")
+            _currentServerId = "1";
+            LoadServer(_currentServerId);
+        }
+
+        // Constructeur par défaut requis par le XAML
+        public DashboardView() {
+            InitializeComponent();
         }
 
         private void InitializeUserDetails() {
@@ -46,39 +55,45 @@ namespace DiscordLikeChatApp.Views {
             UserStatusTextBlock.Text = "En ligne";
         }
 
+        /// <summary>
+        /// Vide tous les conteneurs d'affichage.
+        /// </summary>
+        private void ClearDisplay() {
+            ChannelStackPanel.Children.Clear();
+            FriendsListBox.Items.Clear();
+            FriendsListBox.Visibility = Visibility.Collapsed;
+            MainGrid.Children.Clear();
+        }
+
+        // Lorsqu'un bouton de serveur est cliqué
         private void OnServerButtonClick(object sender, RoutedEventArgs e) {
+            ClearDisplay();
             if (sender is Button button) {
                 _currentServerId = button.Content.ToString();
                 LoadServer(_currentServerId);
             }
         }
 
+        // Charge la vue du serveur (les canaux)
         private async void LoadServer(string serverId) {
-            // Effacer la liste des amis
-            FriendsListBox.Visibility = Visibility.Collapsed;
-            FriendsListBox.Items.Clear();
-            // Charger les canaux du serveur
+            ClearDisplay();
             await LoadChannels(serverId);
         }
 
+        // Lorsqu'un bouton de canal est cliqué, on affiche la vue de chat
         private void OnChannelButtonClick(object sender, RoutedEventArgs e) {
+            ClearDisplay();
             if (sender is Button button) {
                 string channelId = button.Content.ToString();
-                // Charger la vue de chat pour le canal sélectionné
                 LoadChannel(channelId);
             }
         }
 
+        // Charge la liste des canaux du serveur via GET et les affiche
         private async System.Threading.Tasks.Task LoadChannels(string serverId) {
-            // Masquer la liste des amis
-            FriendsListBox.Visibility = Visibility.Collapsed;
-            FriendsListBox.Items.Clear();
-
+            ClearDisplay();
             // Récupérer la liste des canaux via l'API GET
             var channels = await _apiService.GetAsync<List<Channel>>("/channels");
-
-            // Réinitialiser la zone des canaux
-            ChannelStackPanel.Children.Clear();
 
             // Afficher un titre (par exemple, "Serveur 1")
             ChannelStackPanel.Children.Add(new TextBlock {
@@ -105,6 +120,7 @@ namespace DiscordLikeChatApp.Views {
             ChannelStackPanel.Children.Add(createChannelButton);
         }
 
+        // Ajoute un bouton pour un canal
         private void AddChannelButton(string channelName) {
             var channelPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(10) };
 
@@ -131,16 +147,15 @@ namespace DiscordLikeChatApp.Views {
             ChannelStackPanel.Children.Add(channelPanel);
         }
 
+        // Affiche la vue de chat pour le canal sélectionné
         private void LoadChannel(string channelId) {
-            // Afficher la vue de chat pour le canal sélectionné
-            FriendsListBox.Visibility = Visibility.Collapsed;
-            FriendsListBox.Items.Clear();
-
-            MainGrid.Children.Clear();
+            ClearDisplay();
             MainGrid.Children.Add(new ChatView(_apiService, channelId));
         }
 
+        // Gestion de la création d'un nouveau canal
         private async void OnCreateChannelButtonClick(object sender, RoutedEventArgs e) {
+            ClearDisplay();
             // Afficher une boîte de dialogue pour entrer le nom du nouveau canal
             var inputDialog = new InputDialog("Entrez le nom du nouveau canal :");
             if (inputDialog.ShowDialog() == true) {
@@ -161,31 +176,33 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
+        // Affiche la vue de gestion du canal
         private void OnClickManageChannel(string channelId) {
-            MainGrid.Children.Clear();
+            ClearDisplay();
             var channelManager = new ChannelManager();
             MainGrid.Children.Add(channelManager);
         }
 
+        // Affiche les paramètres utilisateur
         private void OnUserSettingsButtonClick(object sender, RoutedEventArgs e) {
-            MainGrid.Children.Clear();
+            ClearDisplay();
             var userSettings = new UserSettings();
             MainGrid.Children.Add(userSettings);
         }
 
-        private void AssignAdminRoleToUser() {
-            // Logique pour attribuer le rôle d'administrateur à l'utilisateur (à compléter)
-        }
 
-        // Nouveau bouton : Afficher tous les utilisateurs et permettre d'ajouter des amis
+        // Affiche la liste de tous les utilisateurs et permet d'ajouter des amis
         private async void OnShowUsersButtonClick(object sender, RoutedEventArgs e) {
+            // Vider tous les conteneurs pour être sûr de n'afficher qu'une vue
+            ClearDisplay();
             try {
-                // Appel à l'API pour récupérer la liste de tous les utilisateurs
+                // Récupérer la liste de tous les utilisateurs via l'API GET sur "/users"
                 var users = await _apiService.GetAsync<List<User>>("/users");
 
-                // On utilise FriendsListBox pour afficher la liste des utilisateurs
-                FriendsListBox.Items.Clear();
-                FriendsListBox.Visibility = Visibility.Visible;
+                // Créer une ListBox pour afficher tous les utilisateurs dans le MainGrid
+                ListBox usersListBox = new ListBox {
+                    Margin = new Thickness(10)
+                };
 
                 foreach (var user in users) {
                     var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
@@ -194,46 +211,71 @@ namespace DiscordLikeChatApp.Views {
                         Width = 150,
                         VerticalAlignment = VerticalAlignment.Center
                     };
+                    // Par exemple, on peut ajouter un bouton pour ajouter en ami
                     var addFriendButton = new Button {
                         Content = "Ajouter en ami",
                         Margin = new Thickness(5)
                     };
-                    addFriendButton.Click += (s, args) => AddFriend(user);
+                    //addFriendButton.Click += (s, args) => AddFriend(user);
+
                     panel.Children.Add(userText);
                     panel.Children.Add(addFriendButton);
-
-                    FriendsListBox.Items.Add(new ListBoxItem { Content = panel });
+                    usersListBox.Items.Add(new ListBoxItem { Content = panel });
                 }
+
+                // Afficher la ListBox dans le MainGrid
+                MainGrid.Children.Clear();
+                MainGrid.Children.Add(usersListBox);
             }
             catch (Exception ex) {
                 MessageBox.Show("Erreur lors du chargement des utilisateurs: " + ex.Message);
             }
         }
 
-        // Méthode pour ajouter un utilisateur en ami
-        private async void AddFriend(User user) {
+
+        // Si OnSearchUsersButtonClick existe déjà, on le redirige
+        private async void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
+            // Vider tous les conteneurs pour n'afficher qu'une vue
+            ClearDisplay();
             try {
-                // Prépare le payload ; j'assume ici que le payload est { friendId: <id> }
-                var payload = new {
-                    friendId = user.Id
+                // Récupérer la liste des amis via l'API GET sur "/friends"
+                var friends = await _apiService.GetAsync<List<User>>("/friends");
+
+                // Créer une ListBox pour afficher les amis dans le ChannelStackPanel
+                ListBox friendsListBox = new ListBox {
+                    Margin = new Thickness(10)
                 };
-                // Appel POST à l'endpoint pour ajouter un ami (à adapter selon ton API)
-                bool success = await _apiService.PostAsync<object, bool>("/friends", payload);
-                if (success) {
-                    MessageBox.Show($"{user.Username} a été ajouté en ami.");
+
+                foreach (var friend in friends) {
+                    var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
+                    var friendText = new TextBlock {
+                        Text = friend.Username,
+                        Width = 150,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    // Vous pouvez ajouter un bouton de suppression ou autre action pour un ami
+                    var removeFriendButton = new Button {
+                        Content = "Supprimer ami",
+                        Margin = new Thickness(5)
+                    };
+                    //removeFriendButton.Click += (s, args) => RemoveFriend(friend);
+
+                    panel.Children.Add(friendText);
+                    panel.Children.Add(removeFriendButton);
+                    friendsListBox.Items.Add(new ListBoxItem { Content = panel });
                 }
-                else {
-                    MessageBox.Show("Erreur lors de l'ajout en ami.");
-                }
+
+                // Afficher la ListBox dans le ChannelStackPanel
+                ChannelStackPanel.Children.Clear();
+                ChannelStackPanel.Children.Add(friendsListBox);
             }
             catch (Exception ex) {
-                MessageBox.Show("Erreur: " + ex.Message);
+                MessageBox.Show("Erreur lors du chargement des amis: " + ex.Message);
             }
         }
 
-        // (Si tu utilises déjà OnSearchUsersButtonClick, tu peux la renommer en OnShowUsersButtonClick ou la conserver)
-        private void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
-            OnShowUsersButtonClick(sender, e);
+        private void AssignAdminRoleToUser() {
+            // Logique pour attribuer le rôle d'administrateur à l'utilisateur (à compléter)
         }
     }
 }

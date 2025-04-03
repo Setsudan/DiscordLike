@@ -1,66 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
-using DiscordLikeChatApp.Models;
+using System.Threading.Tasks;
 using DiscordLikeChatApp.Services;
 
 namespace DiscordLikeChatApp.Views {
     public partial class ChatView : UserControl {
-        private readonly DispatcherTimer _pollTimer;
-        private readonly ApiService _apiService;
-
-        // Identifiant du canal à charger (en string, qui sera converti en Guid)
+        private WebSocketClientService _webSocketClientService;
+        private ApiService _apiService;
         public string ChannelId {
             get; set;
         }
 
-        public ChatView(ApiService apiService, string channelId) {
+        public ChatView() {
             InitializeComponent();
+            InitializeWebSocket();
+        }
+        public ChatView(ApiService apiService, string channelId) : this() {
             _apiService = apiService;
             ChannelId = channelId;
-
-            _pollTimer = new DispatcherTimer {
-                Interval = TimeSpan.FromSeconds(2)
-            };
-            _pollTimer.Tick += async (s, e) => await FetchMessagesAsync();
-            _pollTimer.Start();
-
-            _ = FetchMessagesAsync();
         }
-
-        // Méthode pour récupérer les messages du canal via GET
-        private async Task FetchMessagesAsync() {
+        private async void InitializeWebSocket() {
+            _webSocketClientService = new WebSocketClientService();
+            _webSocketClientService.MessageReceived += OnWebSocketMessageReceived;
             try {
-                // Appel GET à /messages/channel/{ChannelId}
-                var messages = await _apiService.GetAsync<List<Message>>($"/messages/channel/{ChannelId}");
-
-                MessagesListBox.Items.Clear();
-                foreach (var msg in messages) {
-                    MessagesListBox.Items.Add($"{msg.Content}");
-                }
+                await _webSocketClientService.ConnectAsync("ws://localhost:8080/ws");
             }
             catch (Exception ex) {
-                Console.WriteLine("Erreur lors de la récupération des messages: " + ex.Message);
+                MessageBox.Show("Erreur de connexion WebSocket : " + ex.Message);
             }
         }
 
-        // Envoi d'un message via POST
+        // Méthode appelée quand un message est reçu
+        private void OnWebSocketMessageReceived(string message) {
+            // Utilisation du Dispatcher pour mettre à jour l'interface utilisateur depuis un thread non-UI.
+            Dispatcher.Invoke(() => {
+                MessagesListBox.Items.Add(message);
+            });
+        }
+
+        // Envoi d'un message via WebSocket
         private async void OnSendButtonClick(object sender, RoutedEventArgs e) {
-            var channelId = Guid.Parse(ChannelId);
             string messageText = MessageTextBox.Text;
             if (!string.IsNullOrEmpty(messageText)) {
-                var messageRequest = new Message {
-                    ChannelId = channelId,
-                    Content = messageText
-                };
-
                 try {
-                    var sentMessage = await _apiService.PostAsync<Message, Message>("/messages", messageRequest);
+                    await _webSocketClientService.SendMessageAsync(messageText);
                     MessageTextBox.Clear();
-                    await FetchMessagesAsync();
                 }
                 catch (Exception ex) {
                     MessageBox.Show("Erreur lors de l'envoi du message : " + ex.Message);
