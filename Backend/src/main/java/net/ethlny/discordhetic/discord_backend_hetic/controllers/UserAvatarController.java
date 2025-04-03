@@ -39,22 +39,11 @@ public class UserAvatarController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(
-    summary = "Uploader un avatar",
-    description = "Permet à l'utilisateur actuellement connecté d'uploader une image comme avatar (format image uniquement, max 500MB).",
-    requestBody = @RequestBody(
-        required = true,
-        content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ),
-    responses = {
-        @ApiResponse(responseCode = "200", description = "Avatar uploadé avec succès",
-            content = @Content(schema = @Schema(implementation = StandardResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Fichier invalide ou trop volumineux",
-            content = @Content(schema = @Schema(implementation = StandardResponse.class))),
-        @ApiResponse(responseCode = "500", description = "Erreur lors de l'upload",
-            content = @Content(schema = @Schema(implementation = StandardResponse.class)))
-        }
-    )
+    @Operation(summary = "Uploader un avatar", description = "Permet à l'utilisateur actuellement connecté d'uploader une image comme avatar (format image uniquement, max 500MB).", requestBody = @RequestBody(required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)), responses = {
+            @ApiResponse(responseCode = "200", description = "Avatar uploadé avec succès", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Fichier invalide ou trop volumineux", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erreur lors de l'upload", content = @Content(schema = @Schema(implementation = StandardResponse.class)))
+    })
     public StandardResponse uploadAvatar(@AuthenticationPrincipal UserDetailsImpl currentUser,
             @RequestParam("file") MultipartFile file) {
         // Validate file size

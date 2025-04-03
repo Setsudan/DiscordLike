@@ -2,16 +2,22 @@ package net.ethlny.discordhetic.discord_backend_hetic.controllers;
 
 import net.ethlny.discordhetic.discord_backend_hetic.models.Message;
 import net.ethlny.discordhetic.discord_backend_hetic.models.User;
+import net.ethlny.discordhetic.discord_backend_hetic.payload.MessageRequestDTO;
 import net.ethlny.discordhetic.discord_backend_hetic.payload.StandardResponse;
+import net.ethlny.discordhetic.discord_backend_hetic.repositories.UserRepository;
 import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsImpl;
 import net.ethlny.discordhetic.discord_backend_hetic.services.messaging.MessagingService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
 
@@ -24,25 +30,41 @@ public class ChannelMessagingController {
         this.messagingService = messagingService;
     }
 
-    /**
-     * When a client sends a message to /app/channel/{channelId}/send,
-     * this method is invoked. It persists the message and broadcasts the result
-     * to all subscribers of /topic/channel/{channelId}.
-     */
+    @Autowired
+    private UserRepository userRepository;
+
     @MessageMapping("/channel/{channelId}/send")
     @SendTo("/topic/channel/{channelId}")
     public StandardResponse sendMessage(@DestinationVariable("channelId") String channelId,
-            @Payload Message message,
-            SimpMessageHeaderAccessor headerAccessor,
-            @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        // Log the user and message for debugging purposes
-        System.out.println("User: " + currentUser.getUsername() + " is sending a message: " + message.getContent());
-        // Set the sender from the authenticated user (if available)
-        User sender = currentUser.getUser();
+            @Payload MessageRequestDTO messageRequest,
+            SimpMessageHeaderAccessor headerAccessor) {
+
+        System.out.println("Message from sender: " + messageRequest.getSender() +
+                " is sending a message: " + messageRequest.getContent());
+
+        // Parse the sender UUID from the request payload
+        UUID senderUuid = messageRequest.getSender();
+
+        // Retrieve the user based on the UUID from the repository
+        User sender = userRepository.findById(senderUuid)
+                .orElse(null);
+
+        if (sender == null) {
+            return new StandardResponse(404, "Sender not found", null, "Sender with id " + senderUuid + " not found");
+        }
+
+        // Map the DTO to your Message entity
+        Message message = new Message();
+        message.setId(messageRequest.getId());
         message.setSender(sender);
-        // Ensure the channelId is set correctly in the message
+        message.setContent(messageRequest.getContent());
+        message.setTimestamp(messageRequest.getTimestamp());
         message.setChannelId(UUID.fromString(channelId));
+        message.setAttachmentUrl(messageRequest.getAttachmentUrl());
+
         Message savedMessage = messagingService.sendMessage(message);
+
         return new StandardResponse(200, "Message sent", savedMessage, null);
     }
+
 }
