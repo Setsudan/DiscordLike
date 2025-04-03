@@ -1,0 +1,7 @@
+tunnel: discbackend
+credentials-file: ./cloudflared/discbackend.json
+
+ingress:
+  - hostname: discbackend.ethlny.net
+    service: http://localhost:80
+  - service: http_status:404

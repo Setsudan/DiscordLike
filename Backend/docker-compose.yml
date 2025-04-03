@@ -51,6 +51,18 @@ services:
     ports:
       - "9000:9000" # S3 API endpoint
       - "9001:9001" # Admin Console endpoint
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+      - minio
+      - grafana
+      - prometheus
 
 volumes:
   postgres_data:

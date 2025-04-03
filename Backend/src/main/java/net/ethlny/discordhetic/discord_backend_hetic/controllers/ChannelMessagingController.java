@@ -7,6 +7,7 @@ import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsIm
 import net.ethlny.discordhetic.discord_backend_hetic.services.messaging.MessagingService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,9 +32,11 @@ public class ChannelMessagingController {
     @MessageMapping("/channel/{channelId}/send")
     @SendTo("/topic/channel/{channelId}")
     public StandardResponse sendMessage(@DestinationVariable("channelId") String channelId,
-            Message message,
+            @Payload Message message,
             SimpMessageHeaderAccessor headerAccessor,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        // Log the user and message for debugging purposes
+        System.out.println("User: " + currentUser.getUsername() + " is sending a message: " + message.getContent());
         // Set the sender from the authenticated user (if available)
         User sender = currentUser.getUser();
         message.setSender(sender);

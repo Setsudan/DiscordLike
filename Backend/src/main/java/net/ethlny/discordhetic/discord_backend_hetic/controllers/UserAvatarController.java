@@ -31,14 +31,18 @@ public class UserAvatarController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public StandardResponse uploadAvatar(@AuthenticationPrincipal UserDetailsImpl currentUser,
             @RequestParam("file") MultipartFile file) {
+        // Validate file size
+        if (file.getSize() > 1500 * 1024 * 1024) { // 1500MB
+            return new StandardResponse(HttpStatus.BAD_REQUEST.value(),
+                    "File size exceeds the maximum allowed size of 500MB.",
+                    null, null);
+        }
+
         // Validate file type
         String contentType = file.getContentType();
-        if (contentType == null ||
-                !(contentType.equals("image/jpeg") ||
-                        contentType.equals("image/png") ||
-                        contentType.equals("image/gif"))) {
+        if (contentType == null || !contentType.startsWith("image/")) {
             return new StandardResponse(HttpStatus.BAD_REQUEST.value(),
-                    "Invalid file type. Only JPEG, PNG, and GIF images are allowed.",
+                    "Invalid file type. Only web-compatible image types are allowed.",
                     null, null);
         }
 
