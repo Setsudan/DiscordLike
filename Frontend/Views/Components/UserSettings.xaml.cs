@@ -117,7 +117,7 @@ namespace DiscordLikeChatApp.Views.Components {
             string confirmPassword = ConfirmPasswordBox.Password;
 
             if (newPassword == confirmPassword) {
-                // Appel à un endpoint dédié pour changer le mot de passe si disponible
+               
                 MessageBox.Show("Mot de passe changé avec succès");
             }
             else {

@@ -148,9 +148,10 @@ namespace DiscordLikeChatApp.Views {
         }
 
         // Affiche la vue de chat pour le canal sélectionné
-        private void LoadChannel(string channelId) {
-            MainGrid.Children.Add(new ChatView(_apiService, channelId));
+        private void LoadChannel(string channelName) {
+            MainGrid.Children.Add(new ChatView(_apiService, _userSession, channelName));
         }
+
 
         // Gestion de la création d'un nouveau canal
         private async void OnCreateChannelButtonClick(object sender, RoutedEventArgs e) {

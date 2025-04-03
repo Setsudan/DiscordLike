@@ -19,5 +19,9 @@ namespace DiscordLikeChatApp.Services {
                 return data;
             }
         }
+        
+        public Dictionary<string, object> GetAllProperties() {
+            return _sessionData;
+        }
     }
 }

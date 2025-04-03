@@ -11,7 +11,7 @@ namespace DiscordLikeChatApp.Views.Components {
         }
 
         private void OnPromoteToModeratorClick(object sender, RoutedEventArgs e) {
-            // Logique pour nommer un modérateur
+            
             MessageBox.Show("Nommer Modérateur");
         }
 
