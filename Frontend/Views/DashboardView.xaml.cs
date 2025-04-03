@@ -195,19 +195,15 @@ namespace DiscordLikeChatApp.Views {
            ClearMainGrid();
 
             try {
-                // Récupérer l'identifiant de l'utilisateur courant depuis la session
                 string currentUsername = _userSession.Get<string>("Username");
-
-                // Récupérer la liste de tous les utilisateurs via l'API GET sur "/users"
                 var users = await _apiService.GetAsync<List<User>>("/users");
 
                 ListBox usersListBox = new ListBox {
                     Margin = new Thickness(10),
-                    Background = Brushes.Gray
+                    Background = (Brush)new BrushConverter().ConvertFromString("#2C2F33") // Fond bleu foncé
                 };
 
                 foreach (var user in users) {
-                    // Ignorer l'utilisateur courant
                     if (user.Username == currentUsername)
                         continue;
 
@@ -215,13 +211,25 @@ namespace DiscordLikeChatApp.Views {
                     var userText = new TextBlock {
                         Text = user.Username,
                         Width = 150,
-                        VerticalAlignment = VerticalAlignment.Center
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Foreground = Brushes.White
                     };
-                    // Bouton pour ajouter l'utilisateur en ami
+
                     var addFriendButton = new Button {
                         Content = "Ajouter en ami",
+                        Height = 35,
+                        Width = 200, // Augmentez la largeur du bouton
+                        FontSize = 14,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = Brushes.White,
+                        Background = (Brush)new BrushConverter().ConvertFromString("#5865F2"),
+                        BorderBrush = Brushes.Transparent,
+                        Cursor = System.Windows.Input.Cursors.Hand,
+                        Padding = new Thickness(10, 5, 10, 5),
                         Margin = new Thickness(5)
                     };
+
+                    addFriendButton.Template = CreateCustomButtonTemplate();
                     addFriendButton.Click += (s, args) => AddFriend(user);
 
                     panel.Children.Add(userText);
@@ -237,6 +245,36 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
+        private ControlTemplate CreateCustomButtonTemplate() {
+            var borderFactory = new FrameworkElementFactory(typeof(Border));
+            borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(5)); // Coins légèrement arrondis
+            borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+            borderFactory.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
+
+            var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            borderFactory.AppendChild(contentPresenterFactory);
+
+            var template = new ControlTemplate(typeof(Button)) {
+                VisualTree = borderFactory
+            };
+
+            template.Triggers.Add(new Trigger {
+                Property = Button.IsMouseOverProperty,
+                Value = true,
+                Setters = { new Setter(Button.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4752C4"))) }
+            });
+
+            template.Triggers.Add(new Trigger {
+                Property = Button.IsPressedProperty,
+                Value = true,
+                Setters = { new Setter(Button.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A42A5"))) }
+            });
+
+            return template;
+        }
 
         // Méthode pour ajouter un ami
         private async void AddFriend(User user) {
