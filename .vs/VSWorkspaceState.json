@@ -1,14 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\Backend",
-    "\\Frontend",
-    "\\src",
-    "\\src\\Models",
-    "\\src\\Services",
-    "\\src\\Views",
-    "\\src\\ViewsModels"
+    ""
   ],
-  "SelectedNode": "\\src\\Views",
   "PreviewInSolutionExplorer": false
 }

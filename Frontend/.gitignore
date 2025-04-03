@@ -34,3 +34,9 @@ publish/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+#DiscordBackend
+DiscordBackend/
+
+# Visual Studio folder
+.vs/
