@@ -179,7 +179,7 @@ namespace DiscordLikeChatApp.Views {
         // Affiche la vue de gestion du canal
         private void OnClickManageChannel(string channelId) {
             ClearChannelStackPanel();
-            var channelManager = new ChannelManager(channelId, _apiService);
+            var channelManager = new ChannelManager(channelId, _apiService, _userSession);
             MainGrid.Children.Add(channelManager);
         }
 
@@ -192,11 +192,13 @@ namespace DiscordLikeChatApp.Views {
 
         // Affiche la liste de tous les utilisateurs et permet d'ajouter des amis
         private async void OnShowUsersButtonClick(object sender, RoutedEventArgs e) {
-           ClearMainGrid();
+            ClearMainGrid();
 
             try {
                 string currentUsername = _userSession.Get<string>("Username");
                 var users = await _apiService.GetAsync<List<User>>("/users");
+                var friends = await _apiService.GetAsync<List<User>>("/friends");
+                var friendRequests = await _apiService.GetAsync<List<User>>("/friends/requests");
 
                 ListBox usersListBox = new ListBox {
                     Margin = new Thickness(10),
@@ -204,7 +206,7 @@ namespace DiscordLikeChatApp.Views {
                 };
 
                 foreach (var user in users) {
-                    if (user.Username == currentUsername)
+                    if (user.Username == currentUsername || friends.Any(f => f.Id == user.Id))
                         continue;
 
                     var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
@@ -215,25 +217,38 @@ namespace DiscordLikeChatApp.Views {
                         Foreground = Brushes.White
                     };
 
-                    var addFriendButton = new Button {
-                        Content = "Ajouter en ami",
-                        Height = 35,
-                        Width = 200, // Augmentez la largeur du bouton
-                        FontSize = 14,
-                        FontWeight = FontWeights.Bold,
-                        Foreground = Brushes.White,
-                        Background = (Brush)new BrushConverter().ConvertFromString("#5865F2"),
-                        BorderBrush = Brushes.Transparent,
-                        Cursor = System.Windows.Input.Cursors.Hand,
-                        Padding = new Thickness(10, 5, 10, 5),
-                        Margin = new Thickness(5)
-                    };
+                    if (friendRequests.Any(fr => fr.Id == user.Id)) {
+                        var requestSentText = new TextBlock {
+                            Text = "Demande d'ami envoyée",
+                            Foreground = Brushes.Gray,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Margin = new Thickness(10, 0, 0, 0)
+                        };
+                        panel.Children.Add(userText);
+                        panel.Children.Add(requestSentText);
+                    }
+                    else {
+                        var addFriendButton = new Button {
+                            Content = "Ajouter en ami",
+                            Height = 35,
+                            Width = 200, // Augmentez la largeur du bouton
+                            FontSize = 14,
+                            FontWeight = FontWeights.Bold,
+                            Foreground = Brushes.White,
+                            Background = (Brush)new BrushConverter().ConvertFromString("#5865F2"),
+                            BorderBrush = Brushes.Transparent,
+                            Cursor = System.Windows.Input.Cursors.Hand,
+                            Padding = new Thickness(10, 5, 10, 5),
+                            Margin = new Thickness(5)
+                        };
 
-                    addFriendButton.Template = CreateCustomButtonTemplate();
-                    addFriendButton.Click += (s, args) => AddFriend(user);
+                        addFriendButton.Template = CreateCustomButtonTemplate();
+                        addFriendButton.Click += (s, args) => AddFriend(user);
 
-                    panel.Children.Add(userText);
-                    panel.Children.Add(addFriendButton);
+                        panel.Children.Add(userText);
+                        panel.Children.Add(addFriendButton);
+                    }
+
                     usersListBox.Items.Add(new ListBoxItem { Content = panel });
                 }
 
@@ -244,6 +259,9 @@ namespace DiscordLikeChatApp.Views {
                 MessageBox.Show("Erreur lors du chargement des utilisateurs: " + ex.Message);
             }
         }
+
+
+
 
         private ControlTemplate CreateCustomButtonTemplate() {
             var borderFactory = new FrameworkElementFactory(typeof(Border));
@@ -279,12 +297,12 @@ namespace DiscordLikeChatApp.Views {
         // Méthode pour ajouter un ami
         private async void AddFriend(User user) {
             try {
-                var result = await _apiService.PostAsync<User, bool>($"friends/request?recipientId={user.Id}", user);
-                if (result) {
+                var result = await _apiService.PostAsync<User, ApiResponse<User>>($"friends/request?recipientId={user.Id}", user);
+                if (result.Success) {
                     MessageBox.Show($"{user.Username} a été ajouté en tant qu'ami.");
                 }
                 else {
-                    MessageBox.Show($"Erreur lors de l'ajout de {user.Username} en tant qu'ami.");
+                    MessageBox.Show($"{result.Message}");
                 }
             }
             catch (Exception ex) {
@@ -293,23 +311,77 @@ namespace DiscordLikeChatApp.Views {
         }
 
         private async void OnSearchUsersButtonClick(object sender, RoutedEventArgs e) {
-
-         ClearChannelStackPanel();
+            ClearChannelStackPanel();
 
             try {
-
                 var friends = await _apiService.GetAsync<List<User>>("/friends");
+                var friendRequests = await _apiService.GetAsync<List<User>>("/friends/requests");
 
                 ListBox friendsListBox = new ListBox {
-                    Margin = new Thickness(10)
+                    Margin = new Thickness(10),
+                    Background = (Brush)new BrushConverter().ConvertFromString("#2C2F33"),
+                    Foreground = Brushes.White
                 };
+
+                ListBox friendRequestsListBox = new ListBox {
+                    Margin = new Thickness(10),
+                    Background = (Brush)new BrushConverter().ConvertFromString("#2C2F33"),
+                    Foreground = Brushes.White
+                };
+
+                foreach (var request in friendRequests) {
+                    var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
+                    var userText = new TextBlock {
+                        Text = request.Username,
+                        Width = 150,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Foreground = Brushes.White
+                    };
+
+                    var acceptButton = new Button {
+                        Content = "Accepter",
+                        Height = 35,
+                        Width = 100,
+                        FontSize = 14,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = Brushes.White,
+                        Background = (Brush)new BrushConverter().ConvertFromString("#5865F2"),
+                        BorderBrush = Brushes.Transparent,
+                        Cursor = System.Windows.Input.Cursors.Hand,
+                        Padding = new Thickness(10, 5, 10, 5),
+                        Margin = new Thickness(5)
+                    };
+                    acceptButton.Click += async (s, args) => await AcceptFriendRequest(request.Id);
+
+                    var declineButton = new Button {
+                        Content = "Refuser",
+                        Height = 35,
+                        Width = 100,
+                        FontSize = 14,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = Brushes.White,
+                        Background = (Brush)new BrushConverter().ConvertFromString("#FF0000"),
+                        BorderBrush = Brushes.Transparent,
+                        Cursor = System.Windows.Input.Cursors.Hand,
+                        Padding = new Thickness(10, 5, 10, 5),
+                        Margin = new Thickness(5)
+                    };
+                    declineButton.Click += async (s, args) => await DeclineFriendRequest(request.Id);
+
+                    panel.Children.Add(userText);
+                    panel.Children.Add(acceptButton);
+                    panel.Children.Add(declineButton);
+
+                    friendRequestsListBox.Items.Add(new ListBoxItem { Content = panel });
+                }
 
                 foreach (var friend in friends) {
                     var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5) };
                     var friendText = new TextBlock {
                         Text = friend.Username,
                         Width = 150,
-                        VerticalAlignment = VerticalAlignment.Center
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Foreground = Brushes.White
                     };
 
                     panel.Children.Add(friendText);
@@ -319,6 +391,7 @@ namespace DiscordLikeChatApp.Views {
 
                 // Afficher la ListBox dans le ChannelStackPanel
                 ChannelStackPanel.Children.Clear();
+                ChannelStackPanel.Children.Add(friendRequestsListBox);
                 ChannelStackPanel.Children.Add(friendsListBox);
             }
             catch (Exception ex) {
@@ -326,7 +399,36 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
-   
+        private async Task AcceptFriendRequest(Guid friendshipId) {
+            try {
+                var result = await _apiService.PostAsync<object, ApiResponse<object>>($"/friends/{friendshipId}/accept", null);
+                if (result.Success) {
+                    MessageBox.Show("Demande d'ami acceptée.");
+                }
+                else {
+                    MessageBox.Show( result.Message);
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Erreur: " + ex.Message);
+            }
+        }
+
+        private async Task DeclineFriendRequest(Guid friendshipId) {
+            try {
+                var result = await _apiService.PostAsync<object, ApiResponse<object>>($"/friends/{friendshipId}/decline", null);
+                if (result.Success) {
+                    MessageBox.Show("Demande d'ami refusée.");
+                }
+                else {
+                    MessageBox.Show( result.Message);
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Erreur: " + ex.Message);
+            }
+        }
+
 
         private void AssignAdminRoleToUser() {
             // Logique pour attribuer le rôle d'administrateur à l'utilisateur (à compléter)

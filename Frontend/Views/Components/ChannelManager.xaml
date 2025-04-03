@@ -132,9 +132,7 @@
                          Style="{StaticResource ModernListBoxStyle}"
                          Margin="0,0,0,20"
                          Height="120">
-                    <ListBoxItem Content="Utilisateur1 (Admin)"/>
-                    <ListBoxItem Content="Utilisateur2 (Modérateur)"/>
-                    <ListBoxItem Content="Utilisateur3 (Membre)"/>
+                
                 </ListBox>
 
                 <!-- Actions de modération -->

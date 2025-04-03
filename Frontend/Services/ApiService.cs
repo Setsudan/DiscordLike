@@ -95,8 +95,8 @@ namespace DiscordLikeChatApp.Services {
         }
 
         // Exemple de méthode pour supprimer un canal
-        public async Task<bool> DeleteChannelAsync(string serverId, string channelId) {
-            return await DeleteAsync($"api/servers/{serverId}/channels/{channelId}");
+        public async Task<bool> DeleteChannelAsync( string channelId) {
+            return await DeleteAsync($"/channels/{channelId}");
         }
 
         // Exemple de méthode pour mettre à jour un canal via PUT
