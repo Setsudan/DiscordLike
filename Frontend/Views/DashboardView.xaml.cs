@@ -179,7 +179,7 @@ namespace DiscordLikeChatApp.Views {
         // Affiche la vue de gestion du canal
         private void OnClickManageChannel(string channelId) {
             ClearChannelStackPanel();
-            var channelManager = new ChannelManager();
+            var channelManager = new ChannelManager(channelId, _apiService);
             MainGrid.Children.Add(channelManager);
         }
 

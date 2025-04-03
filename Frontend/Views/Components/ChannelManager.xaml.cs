@@ -1,15 +1,21 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using DiscordLikeChatApp.Models;
+using DiscordLikeChatApp.Services;
 
 namespace DiscordLikeChatApp.Views.Components {
     /// <summary>
     /// Logique d'interaction pour ChannelManager.xaml
     /// </summary>
     public partial class ChannelManager : UserControl {
-        public ChannelManager() {
+        private readonly ApiService _apiService;
+        public string _channelId;
+        public ChannelManager(string channelId, ApiService apiService) {
             InitializeComponent();
+            _channelId = channelId;
+            _apiService = apiService;
         }
-
         private void OnPromoteToModeratorClick(object sender, RoutedEventArgs e) {
             
             MessageBox.Show("Nommer Modérateur");
@@ -25,11 +31,16 @@ namespace DiscordLikeChatApp.Views.Components {
             MessageBox.Show("Bloquer/Bannir Utilisateur");
         }
 
-        private void OnSaveChannelSettingsClick(object sender, RoutedEventArgs e) {
-            // Logique pour enregistrer les modifications des paramètres du salon
+        private async void OnSaveChannelSettingsClick(object sender, RoutedEventArgs e) {
             string channelName = ChannelNameTextBox.Text;
             string channelDescription = ChannelDescriptionTextBox.Text;
-            MessageBox.Show($"Enregistrer les Modifications: {channelName}, {channelDescription}");
+            await _apiService.PutAsync<Channel, Channel>("/channels", new Channel {
+                Name = channelName,
+            });
+        }
+
+        private async Task OnDeleteChannelClick(object sender, RoutedEventArgs e) {
+            await _apiService.DeleteAsync($"/channels{_channelId}");
         }
     }
 }

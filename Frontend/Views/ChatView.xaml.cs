@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DiscordLikeChatApp.Services;
 using DiscordLikeChatApp.Models;
+using DiscordFrontEnd.Models;
 
 namespace DiscordLikeChatApp.Views {
     public partial class ChatView : UserControl {
@@ -78,9 +79,10 @@ namespace DiscordLikeChatApp.Views {
 
         // Envoi d'un message via WebSocket
         private async void OnSendButtonClick(object sender, RoutedEventArgs e) {
-            DisplayUserSessionProperties(); // Afficher les propriétés de la session utilisateur
+            var username = _userSession.Get<string>("Username");
+            var userId = await RetrieveUserIdAsync(username);
             string messageText = MessageTextBox.Text;
-            if (!string.IsNullOrEmpty(messageText)) {
+            if (!string.IsNullOrEmpty(messageText) && !string.IsNullOrEmpty(userId)) {
                 try {
                     // Vérifier que la destination est bien définie
                     if (string.IsNullOrEmpty(_webSocketClientService.Destination) && !string.IsNullOrEmpty(ChannelId)) {
@@ -90,25 +92,34 @@ namespace DiscordLikeChatApp.Views {
                         content = messageText,
                         timestamp = DateTime.UtcNow,
                         channelId = ChannelId,
-                        sender = _userSession.Get<string>("Username"),
+                        sender = userId,
                     };
                     string jsonMessage = JsonSerializer.Serialize(messagePayload);
                     string authToken = _userSession.Get<string>("Authorization");
                     await _webSocketClientService.SendJsonMessageAsync(jsonMessage, authToken);
                     MessageTextBox.Clear();
-                    Console.WriteLine(jsonMessage);
                 }
                 catch (Exception ex) {
                     MessageBox.Show("Erreur lors de l'envoi du message : " + ex.Message);
                 }
             }
         }
-        private void DisplayUserSessionProperties() {
-            var properties = _userSession.GetAllProperties(); // Assurez-vous que UserSession a une méthode GetAllProperties()
-            foreach (var property in properties) {
-                Console.WriteLine($"{property.Key}: {property.Value}");
+        private async Task<string> RetrieveUserIdAsync(string userName) {
+            try {
+                var users = await _apiService.GetAsync<List<User>>("/users");
+                var userObj = users?.FirstOrDefault(u => u.Username.Equals(userName, StringComparison.OrdinalIgnoreCase));
+                if (userObj != null) {
+                    return userObj.Id.ToString();
+                }
+                else {
+                    MessageBox.Show($"Utilisateur '{userName}' non trouvé.");
+                    return null;
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Erreur lors de la récupération de l'identifiant de l'utilisateur : " + ex.Message);
+                return null;
             }
         }
-
     }
 }
