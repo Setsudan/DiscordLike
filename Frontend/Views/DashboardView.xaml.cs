@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,6 +18,8 @@ namespace DiscordLikeChatApp.Views {
         private string _username;
         private readonly ApiService _apiService;
         private string _currentServerId;
+        private readonly IConfiguration _configuration;
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -181,7 +184,7 @@ namespace DiscordLikeChatApp.Views {
 
         // Affiche les paramètres utilisateur
         private void OnUserSettingsButtonClick(object sender, RoutedEventArgs e) {
-            var userSettings = new UserSettings();
+            var userSettings = new UserSettings(_userSession, _configuration);
             MainGrid.Children.Add(userSettings);
         }
 
