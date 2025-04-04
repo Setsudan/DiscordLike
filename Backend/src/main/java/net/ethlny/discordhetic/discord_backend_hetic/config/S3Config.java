@@ -28,7 +28,8 @@ public class S3Config {
     public AmazonS3 amazonS3() {
         BasicAWSCredentials creds = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
+                .withEndpointConfiguration(
+                        new AwsClientBuilder.EndpointConfiguration(endpoint, region))
                 .withCredentials(new AWSStaticCredentialsProvider(creds))
                 .withPathStyleAccessEnabled(true) // Needed for MinIO compatibility
                 .build();
