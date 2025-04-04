@@ -99,6 +99,8 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/prometheus").permitAll()
                         // Allow other actuator endpoints if desired
                         .requestMatchers("/actuator/**").permitAll()
+                        // WebSocket endpoints
+                        .requestMatchers("/ws/**").permitAll()
                         // Protected endpoints
                         .requestMatchers("/channels/**").authenticated()
                         .requestMatchers("/guilds/**").authenticated()

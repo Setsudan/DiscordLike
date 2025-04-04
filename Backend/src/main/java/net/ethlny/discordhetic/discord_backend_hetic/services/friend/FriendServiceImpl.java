@@ -62,7 +62,8 @@ public class FriendServiceImpl implements FriendService {
     public List<User> getFriends(User user) {
         List<User> friends = new ArrayList<>();
         List<Friendship> asRequester = friendshipRepository.findByRequesterAndStatus(user, FriendshipStatus.ACCEPTED);
-        List<Friendship> asRecipient = friendshipRepository.findByRecipientAndStatus(user, FriendshipStatus.ACCEPTED);
+        List<Friendship> asRecipient = friendshipRepository.findByRecipient_IdAndStatus(user.getId(),
+                FriendshipStatus.ACCEPTED);
         asRequester.forEach(f -> friends.add(f.getRecipient()));
         asRecipient.forEach(f -> friends.add(f.getRequester()));
         return friends;
@@ -70,6 +71,6 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public List<Friendship> getPendingRequests(User user) {
-        return friendshipRepository.findByRecipientAndStatus(user, FriendshipStatus.PENDING);
+        return friendshipRepository.findByRecipient_IdAndStatus(user.getId(), FriendshipStatus.PENDING);
     }
 }

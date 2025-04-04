@@ -24,7 +24,7 @@ namespace DiscordFrontEnd.Models {
         public DateTime CreatedAt {
             get; set;
         }
-        public DateTime LastLogin {
+        public DateTime? LastLogin {
             get; set;
         }
         public bool Online {

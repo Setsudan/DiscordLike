@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DiscordFrontEnd.Models;
-using DiscordFrontEnd.Services;
+using DiscordLikeChatApp;
+using DiscordLikeChatApp.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace DiscordFrontEnd.ViewModels {
     public class LoginViewModel : INotifyPropertyChanged {
@@ -31,19 +33,28 @@ namespace DiscordFrontEnd.ViewModels {
             get;
         }
 
-        public LoginViewModel() {
-            _apiService = new ApiService();
+        public LoginViewModel(IConfiguration configuration,string authToken) {
+            _apiService = new ApiService(configuration, authToken);
             LoginCommand = new RelayCommand(async _ => await LoginAsync());
         }
 
         private async Task LoginAsync() {
-            var success = await _apiService.LoginAsync(Username, Password);
+            var success = await _apiService.PostAsync<LoginRequest, bool>("login", new LoginRequest { Username = Username, Password = Password });
 
             if (success) {
                 // Connexion réussie
+              
             }
             else {
                 // Connexion échouée
+            }
+        }
+        public class LoginRequest {
+            public string Username {
+                get; set;
+            }
+            public string Password {
+                get; set;
             }
         }
 

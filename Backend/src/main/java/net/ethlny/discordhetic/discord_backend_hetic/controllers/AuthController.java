@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.ethlny.discordhetic.discord_backend_hetic.models.Role;
 import net.ethlny.discordhetic.discord_backend_hetic.models.User;
 import net.ethlny.discordhetic.discord_backend_hetic.payload.JwtResponse;
@@ -32,6 +37,7 @@ import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsIm
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentification", description = "Connexion et inscription des utilisateurs")
 public class AuthController {
 
     @Autowired
@@ -50,6 +56,16 @@ public class AuthController {
     JwtTokenProvider jwtTokenProvider;
 
     // Endpoint de connexion
+    @Operation(
+    summary = "Connexion utilisateur",
+    description = "Authentifie l'utilisateur et retourne un token JWT",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Authentification réussie",
+            content = @Content(schema = @Schema(implementation = JwtResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Identifiants invalides"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+        }
+    )
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
@@ -71,6 +87,21 @@ public class AuthController {
     }
 
     // Endpoint d'inscription
+    @Operation(
+        summary = "Inscription utilisateur",
+        description = "Inscrit un nouvel utilisateur et retourne un token JWT",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Utilisateur inscrit avec succès",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Erreur de validation ou doublon (email / username)",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = StandardResponse.class)))
+        }
+    )
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {

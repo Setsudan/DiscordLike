@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="DiscordLikeChatApp.Views.RegisterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#2C2F33">
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Background="#23272A" Padding="30" CornerRadius="12"
+                MinWidth="300" MaxWidth="400" BorderBrush="#7289DA" BorderThickness="2">
+
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <!-- Titre -->
+                <TextBlock Text="Créer un compte" 
+                           FontSize="22" FontWeight="Bold" Foreground="White" 
+                           TextAlignment="Center" TextWrapping="Wrap"
+                           Margin="0,0,0,20" />
+
+                <!-- Champ Nom d'utilisateur -->
+                <TextBlock Text="Nom d'utilisateur :" Foreground="White" Margin="0,0,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
+                    <TextBox Name="UsernameTextBox" 
+                             Height="35" FontSize="14"
+                             Foreground="White" Background="Transparent"
+                             BorderThickness="0" Padding="5"/>
+                </Border>
+
+                <!-- Champ Email -->
+                <TextBlock Text="Email :" Foreground="White" Margin="10,0,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
+                    <TextBox Name="EmailTextBox" 
+                             Height="35" FontSize="14"
+                             Foreground="White" Background="Transparent"
+                             BorderThickness="0" Padding="5"/>
+                </Border>
+
+                <!-- Champ Mot de passe -->
+                <TextBlock Text="Mot de passe :" Foreground="White" Margin="10,0,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
+                    <PasswordBox Name="PasswordBox" 
+                                 Height="35" FontSize="14"
+                                 Foreground="White" Background="Transparent"
+                                 BorderThickness="0" Padding="5"/>
+                </Border>
+
+                <!-- Champ Rôles -->
+                <TextBlock Text="Rôles (USER par défaut) :" Foreground="White" Margin="10,0,0,5"/>
+                <Border Background="#40444B" CornerRadius="10" Padding="5">
+                    <TextBox Name="RolesTextBox" 
+                             Height="35" FontSize="14"
+                             Foreground="White" Background="Transparent"
+                             BorderThickness="0" Padding="5"/>
+                </Border>
+
+                <!-- Bouton S'inscrire -->
+                <Button Content="S'inscrire" Height="45"
+                        FontSize="16" FontWeight="Bold"
+                        Foreground="White" Background="#5865F2"
+                        BorderBrush="Transparent" Cursor="Hand"
+                        Margin="0,20,0,5" Click="SignupButton_Click">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="20" BorderBrush="Transparent">
+                                <Grid>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#4752C4"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#3A42A5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Lien vers la connexion -->
+                <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    Déjà inscrit ?  
+                    <Hyperlink NavigateUri="login" RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock Foreground="#7289DA">Connectez-vous ici</TextBlock>
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

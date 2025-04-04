@@ -1,9 +1,14 @@
 {
   "ExpandedNodes": [
+<<<<<<< HEAD
     "",
     "\\Backend",
     "\\Frontend"
   ],
   "SelectedNode": "\\Frontend\\DiscordLikeChatApp.sln",
+=======
+    ""
+  ],
+>>>>>>> 9e43e39bb2cc76dce5423e8f83f65459d405414b
   "PreviewInSolutionExplorer": false
 }
