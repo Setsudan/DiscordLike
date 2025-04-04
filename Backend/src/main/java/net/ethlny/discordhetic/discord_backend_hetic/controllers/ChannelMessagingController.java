@@ -5,7 +5,6 @@ import net.ethlny.discordhetic.discord_backend_hetic.models.User;
 import net.ethlny.discordhetic.discord_backend_hetic.payload.MessageRequestDTO;
 import net.ethlny.discordhetic.discord_backend_hetic.payload.StandardResponse;
 import net.ethlny.discordhetic.discord_backend_hetic.repositories.UserRepository;
-import net.ethlny.discordhetic.discord_backend_hetic.services.User.UserDetailsImpl;
 import net.ethlny.discordhetic.discord_backend_hetic.services.messaging.MessagingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
 
@@ -53,9 +49,7 @@ public class ChannelMessagingController {
             return new StandardResponse(404, "Sender not found", null, "Sender with id " + senderUuid + " not found");
         }
 
-        // Map the DTO to your Message entity
         Message message = new Message();
-        message.setId(messageRequest.getId());
         message.setSender(sender);
         message.setContent(messageRequest.getContent());
         message.setTimestamp(messageRequest.getTimestamp());

@@ -9,11 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageRequestDTO {
-    private UUID id;
     private UUID sender;
     private String content;
     private LocalDateTime timestamp;
     private UUID channelId;
     private String attachmentUrl;
-
 }
