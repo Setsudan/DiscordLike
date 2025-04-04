@@ -2,13 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\Backend",
-    "\\Frontend",
-    "\\src",
-    "\\src\\Models",
-    "\\src\\Services",
-    "\\src\\Views",
-    "\\src\\ViewsModels"
+    "\\Frontend"
   ],
-  "SelectedNode": "\\src\\Views",
+  "SelectedNode": "\\Frontend\\DiscordLikeChatApp.sln",
   "PreviewInSolutionExplorer": false
 }
