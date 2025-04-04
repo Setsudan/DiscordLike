@@ -38,26 +38,26 @@ namespace DiscordLikeChatApp.Services {
         }
 
         // New method: accepts a message string, creates a JSON payload, and sends it.
-        public async Task SendJsonMessageAsync(string messageText, string bearerToken) {
+        public async Task SendJsonMessageAsync(string jsonPayload, string bearerToken) {
             if (_client.State != WebSocketState.Open)
                 throw new InvalidOperationException("WebSocket is not connected.");
-
             if (string.IsNullOrEmpty(Destination))
                 throw new InvalidOperationException("Destination is not set.");
-
             if (string.IsNullOrEmpty(bearerToken))
                 throw new InvalidOperationException("Bearer token is not provided.");
 
-            // Create a JSON payload; adjust the properties as needed.
-            var payloadObj = new {
-                content = messageText
-            };
-            string jsonPayload = JsonSerializer.Serialize(payloadObj);
+            int contentLength = Encoding.UTF8.GetByteCount(jsonPayload);
+            // Construction du frame STOMP avec les retours à la ligne et la terminaison par \0
+            string frame = $"SEND\n" +
+                           $"destination:{Destination}\n" +
+                           $"Authorization:Bearer {bearerToken}\n" +
+                           $"content-type:application/json\n" +
+                           $"content-length:{contentLength}\n\n" +
+                           $"{jsonPayload}\0";
 
-            // Create a STOMP SEND frame with Authorization header.
-            string frame = $"SEND\ndestination:{Destination}\nAuthorization: Bearer {bearerToken}\ncontent-length:{Encoding.UTF8.GetByteCount(jsonPayload)}\n\n{jsonPayload}\0";
             await SendFrameAsync(frame);
         }
+
 
         private async Task SendFrameAsync(string frame) {
             byte[] frameBytes = Encoding.UTF8.GetBytes(frame);
