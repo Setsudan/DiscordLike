@@ -48,6 +48,11 @@ namespace DiscordLikeChatApp.Views {
             _webSocketClientService.MessageReceived += OnWebSocketMessageReceived;
             try {
                 await _webSocketClientService.ConnectAsync("wss://discord-backend.ethlny.net/ws");
+
+                // Once connected, subscribe to the /topic/channel/<channelId> if you already have ChannelId
+                if (!string.IsNullOrEmpty(ChannelId)) {
+                    await _webSocketClientService.SubscribeAsync("/topic/channel/" + ChannelId);
+                }
             }
             catch (Exception ex) {
                 MessageBox.Show("Erreur de connexion WebSocket : " + ex.Message);

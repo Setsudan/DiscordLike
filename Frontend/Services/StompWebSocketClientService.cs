@@ -57,7 +57,18 @@ namespace DiscordLikeChatApp.Services {
 
             await SendFrameAsync(frame);
         }
+        public async Task SubscribeAsync(string topic) {
+            // Generate a unique subscription ID or a static one
+            string subId = Guid.NewGuid().ToString();
 
+            string frame =
+                $"SUBSCRIBE\n" +
+                $"id:{subId}\n" +
+                $"destination:{topic}\n\n" +
+                "\0";
+
+            await SendFrameAsync(frame);
+        }
 
         private async Task SendFrameAsync(string frame) {
             byte[] frameBytes = Encoding.UTF8.GetBytes(frame);
