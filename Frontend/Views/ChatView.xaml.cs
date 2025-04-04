@@ -84,7 +84,7 @@ namespace DiscordLikeChatApp.Views {
             string messageText = MessageTextBox.Text;
             if (!string.IsNullOrEmpty(messageText) && !string.IsNullOrEmpty(userId)) {
                 try {
-                    // Vérifier que la destination est bien définie
+                    // Assurez-vous que la destination est bien définie
                     if (string.IsNullOrEmpty(_webSocketClientService.Destination) && !string.IsNullOrEmpty(ChannelId)) {
                         _webSocketClientService.Destination = $"/app/channel/{ChannelId}/send";
                     }
@@ -98,12 +98,16 @@ namespace DiscordLikeChatApp.Views {
                     string authToken = _userSession.Get<string>("Authorization");
                     await _webSocketClientService.SendJsonMessageAsync(jsonMessage, authToken);
                     MessageTextBox.Clear();
+                    Console.WriteLine(jsonMessage);
+                    // Optionnel: afficher le message envoyé
+                    MessagesListBox.Items.Add($"Moi: {messageText}");
                 }
                 catch (Exception ex) {
                     MessageBox.Show("Erreur lors de l'envoi du message : " + ex.Message);
                 }
             }
         }
+
         private async Task<string> RetrieveUserIdAsync(string userName) {
             try {
                 var users = await _apiService.GetAsync<List<User>>("/users");
