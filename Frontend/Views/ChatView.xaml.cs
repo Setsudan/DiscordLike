@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DiscordLikeChatApp.Services;
 using DiscordLikeChatApp.Models;
 using DiscordFrontEnd.Models;
+using System.Windows.Media;
 
 namespace DiscordLikeChatApp.Views {
     public partial class ChatView : UserControl {
@@ -78,7 +79,13 @@ namespace DiscordLikeChatApp.Views {
 
         private void OnWebSocketMessageReceived(string message) {
             Dispatcher.Invoke(() => {
-                MessagesListBox.Items.Add(message);
+                var messageTextBlock = new TextBlock {
+                    Text = message,
+                    Foreground = Brushes.White,
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(5)
+                };
+                MessagesListBox.Items.Add(messageTextBlock);
             });
         }
 
