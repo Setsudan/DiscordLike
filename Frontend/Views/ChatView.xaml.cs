@@ -77,33 +77,15 @@ namespace DiscordLikeChatApp.Views {
             }
         }
 
-        private void OnWebSocketMessageReceived(string frame) {
-            // 1) Only handle frames that start with "MESSAGE"  
-            if (!frame.StartsWith("MESSAGE")) {
-                // e.g. might be CONNECTED, RECEIPT, ERROR, etc.
-                return;
-            }
-
-            // 2) Extract the JSON body from the raw STOMP frame by looking for the blank line "\n\n"
-            int indexOfBody = frame.IndexOf("\n\n");
-            if (indexOfBody < 0)
-                return; // No body found
-
-            string jsonBody = frame.Substring(indexOfBody + 2).TrimEnd('\0');
-
-            // 3) Deserialize that JSON into our StandardResponse<MessagePayload>
-            var response = JsonSerializer.Deserialize<StandardResponse<MessagePayload>>(jsonBody);
-            if (response == null || response.Data == null)
-                return;
-
-            // 4) Get the message details and add to your UI
-            var msgData = response.Data;
-            string senderName = msgData.Sender?.Username ?? "Unknown";
-            string textToDisplay = $"{senderName}: {msgData.Content}";
-
-            Dispatcher.Invoke(() =>
-            {
-                MessagesListBox.Items.Add(textToDisplay);
+        private void OnWebSocketMessageReceived(string message) {
+            Dispatcher.Invoke(() => {
+                var messageTextBlock = new TextBlock {
+                    Text = message,
+                    Foreground = Brushes.White,
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(5)
+                };
+                MessagesListBox.Items.Add(messageTextBlock);
             });
         }
 
